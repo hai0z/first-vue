@@ -1,44 +1,36 @@
 <template>
-    <div class="flex h-screen w-full flex-col bg-slate-600  items-center">
-        <h1>Todo App</h1>
-        <input type="text" placeholder="enter task name" v-model="taskName" class="text-black max-w-sm p-2 rounded-sm">
-        <div class="flex flex-col justify-center w-fit">
-            <div v-for="(task, index) in todoList" :key="index" class="bg-indigo-500 my-2 p-2 rounded-md cursor-pointer">
-                <p :class="{ 'line-through': task.done }" @click="toggleTask(task.id)"> {{ task.taskName }}</p>
+    <div class="bg-base-100 flex flex-row">
+        <leftSidebar />
+        <div class="w-6/12 ml-[16%] flex flex-col items-center mt-10">
+            <div class="story h-20 flex flex-row items-center gap-2 w-9/12">
+                <div v-for="(_, index) in fakeStory" :key="index">
+                    <storyAvatar />
+                </div>
             </div>
-            <button @click="addTodo(taskName)">add</button>
+            <div class="mt-16 w-7/12">
+                <div v-for="(post, index) in fakePost" :key='index'>
+                    <userPost />
+                </div>
+            </div>
         </div>
-
+        <rightSidebar />
     </div>
 </template>
 <script lang="ts">
-import { ref, computed } from 'vue';
-type todoType = {
-    taskName: string,
-    id: number,
-    done: boolean
-}
+import storyAvatar from './components/story-avatar.vue';
+import leftSidebar from './components/left-sidebar.vue';
+import rightSidebar from './components/right-sidebar.vue'
+import userPost from './components/user-post.vue';
+import { ref } from 'vue';
+
 export default {
     name: 'App',
+    components: { storyAvatar, leftSidebar, rightSidebar, userPost },
     setup() {
-        const todoList = ref<todoType[]>([])
-        const taskName = ref<string>('')
-        const addTodo = (taskName1: string) => {
-            todoList.value.push({
-                id: Math.random() * 1000,
-                taskName: taskName1,
-                done: true
-            })
-            taskName.value = ''
-        }
-        const toggleTask = computed(() => (id: number) => {
-            todoList.value = todoList.value.map(todo => todo.id === id ? { ...todo, done: !todo.done } : todo);
-        });
+        const fakeStory = ref([1, 2, 3, 4, 5, 6, 7, 8])
+        const fakePost = ref([1, 2, 3, 4, 5, 6, 7, 8])
         return {
-            todoList,
-            taskName,
-            addTodo,
-            toggleTask
+            fakeStory, fakePost
         }
     }
 }
