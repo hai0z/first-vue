@@ -13,6 +13,8 @@
   },
   "dependencies": {
     "@fortawesome/vue-fontawesome": "^3.0.3",
+    "firebase": "^9.22.2",
+    "pinia": "^2.1.4",
     "vue": "^3.3.4",
     "vue-router": "^4.2.2"
   },

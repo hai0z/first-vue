@@ -31,7 +31,15 @@
     </div>
 </template>
 <script lang="ts">
+type Post = {
+
+}
 export default {
-    name: 'user-post'
+    name: 'user-post',
+    props: {
+        post: {
+            type: Number
+        },
+    },
 }
 </script>
