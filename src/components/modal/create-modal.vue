@@ -3,7 +3,7 @@
         <form method="dialog" :class="['modal-box transition-all duration-300 h-[70vh]', selectedImage && 'max-w-5xl']">
             <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" @click="handleCloseModal">✕</button>
             <h3 class="font-bold text-lg text-center">Create new post </h3>
-            <div className="border-b"></div>
+            <div className="border-b p-2"></div>
             <div v-if="!selectedImage" class="flex flex-col justify-center items-center h-[90%]">
                 <input type="file" @change="handleFileSelect" accept="image/*" class="file-input" hidden ref="fileInputRef">
                 <span>No file choosen</span>
