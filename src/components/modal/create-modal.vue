@@ -9,8 +9,10 @@
                 <span>No file choosen</span>
                 <button class="btn btn-link" @click="openFileInput">Select from computer</button>
             </div>
-            <div v-else-if="selectedImage" class="flex">
-                <img :src="selectedImage" alt="Selected Image" class="w-2/3 object-cover" />
+            <div v-else-if="selectedImage" class="flex h-[95%]">
+                <div class="w-2/3 bg-black/50 flex justify-center items-center">
+                    <img :src="selectedImage" alt="Selected Image" class="object-contain h-full" />
+                </div>
                 <div class="w-1/3 flex flex-col">
                     <div class="flex gap-2 items-center p-4">
                         <img :src="authStore.userInfo.photoURL" alt="" class="w-10 h-10 rounded-full">
