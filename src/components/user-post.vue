@@ -10,7 +10,7 @@
             </div>
             <i class="fa-solid fa-ellipsis  text-lg cursor-pointer"></i>
         </div>
-        <img :src="post.imageUrl[0]" class="object-cover rounded-sm w-full">
+        <img :src="post.imageUrl[0]" class="object-cover rounded-sm w-full" loading="lazy">
         <div class="post-action flex flex-row items-center py-2">
             <div class="flex gap-4">
                 <Presence>
@@ -66,7 +66,6 @@ export default {
         const router = useRouter()
         const authStore = useAuthStore()
         const isLikePost = ref(props.post.like.includes(auth.currentUser?.uid as string))
-
         const input = ref('')
         const handleClick = (postId: string) => {
             modalStore.setOpenViewPostModal(true)

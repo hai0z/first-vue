@@ -29,7 +29,6 @@ export default {
     setup() {
         const fakeStory = ref([1, 2, 3, 4, 5, 6, 7, 8])
         const authStore = useAuthStore()
-
         return {
             fakeStory, authStore
         }

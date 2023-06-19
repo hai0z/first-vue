@@ -32,7 +32,7 @@ export const useAuthStore = defineStore('auth', () => {
         id: doc.id,
         userUid: doc.data().userUid,
         userDisplayName: doc.data().userDisplayName,
-        userAvatar: doc.data().photoURL,
+        userAvatar: doc.data().userAvatar,
         content: doc.data().content,
         imageUrl: doc.data().imageUrl,
         time: doc.data().time,
