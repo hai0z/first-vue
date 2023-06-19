@@ -29,7 +29,7 @@
                 <span class="font-semibold text-base-content">{{ post?.userDisplayName }}</span> {{
                     post?.content }}
             </p>
-            <button class="btn btn-link p-0" @click="handleClick(post.postId)">View all commment</button>
+            <button class="text-zinc-400" @click="handleClick(post.postId)">View {{ post.comment.length }} comment</button>
             <div v-for="(comment, index) in post.comment.sort((a, b) => +b.time - +a.time).slice(0, 2)" :key="index">
                 <div><span class="font-semibold">{{ comment.userDisplayName }}</span> {{ comment.content }}</div>
             </div>

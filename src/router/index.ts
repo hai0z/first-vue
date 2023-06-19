@@ -37,7 +37,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('../views/profile-page.vue')
       },
       {
-        path: '/p/:id',
+        path: '/profile/p/:id',
         component: () => import('../views/profile-page.vue'),
         meta: {
           requiresAuth: true
@@ -54,7 +54,6 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore()
-  console.log(authStore.isAuthenticated)
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     next('/login') // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
   } else {

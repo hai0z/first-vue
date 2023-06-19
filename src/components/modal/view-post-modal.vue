@@ -106,9 +106,11 @@ export default {
         watch(
             () => route.params.id,
             async (newVal) => {
-                onSnapshot(doc(db, `posts/${newVal}`), (doc) => {
-                    post.value = doc.data() as Post;
-                });
+                if (newVal != undefined) {
+                    onSnapshot(doc(db, `posts/${newVal}`), (doc) => {
+                        post.value = doc.data() as Post;
+                    });
+                }
             }
         );
         return {

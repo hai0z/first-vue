@@ -52,6 +52,7 @@ export const useAuthStore = defineStore('auth', () => {
       } else {
         isAuthenticated.value = false
         userInfo.value = {} as UserInfo
+        userPosts.value = []
         router.push('/login')
       }
     })
