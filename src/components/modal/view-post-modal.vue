@@ -1,10 +1,10 @@
 <template>
     <Presence>
-        <div v-show="modalStore.viewPostModalOpen"
-            :class="['fixed z-50 top-0 left-0 right-0 bottom-0 flex justify-center items-center backdrop-brightness-50 transition-all duration-300']">
+        <div v-show="modalStore.viewPostModalOpen" @click="clickOutside"
+            :class="['fixed z-50 top-0 left-0 right-0 bottom-0 flex justify-center items-center backdrop-brightness-50 transition-all duration-300 modal-wrapper']">
             <span class="absolute top-4 right-8 text-black text-3xl cursor-pointer" @click="handleCloseModal">x</span>
             <Motion v-if="post.postId" :initial="{ opacity: 0, scale: 1.2 }" :animate="{ opacity: 1, scale: 1 }" :transition="{ duration: 0.1 }"
-                :exit="{ opacity: 0, scale: 1.2 }"
+                @click.stop :exit="{ opacity: 0, scale: 1.2 }"
                 class="w-8/12 h-[95%] bg-gradient-to-br from-[#8a3ab9] via-[ #bc2a8d] to-[#fbad50] flex rounded-sm p-1">
                 <div class="flex h-full w-full">
                     <div class="w-2/3 bg-black">
@@ -14,7 +14,6 @@
                         <div class="flex flex-row gap-2 items-center">
                             <img :src="post.userAvatar" class="h-10 w-10 rounded-full" />
                             <span class="font-semibold">{{ post.userDisplayName }}</span>
-
                         </div>
                         <div class="divider"></div>
                         <div class="comment flex-[4] overflow-y-auto">
@@ -107,6 +106,11 @@ export default {
             })
             input.value = ""
         }
+        const clickOutside = (event: any) => {
+            if (event.target.classList.contains('modal-wrapper')) {
+                modalStore.setOpenViewPostModal(false)
+            }
+        }
         watch(
             () => route.params.id,
             async (newVal) => {
@@ -118,7 +122,7 @@ export default {
             }
         );
         return {
-            modalStore, handleCloseModal, post, formatDistance, postStore, auth, input, handleComment, commentRef
+            modalStore, handleCloseModal, post, formatDistance, postStore, auth, input, handleComment, commentRef, clickOutside
         }
     }
 }
