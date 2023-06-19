@@ -2,7 +2,7 @@
     <Presence>
         <div v-show="modalStore.viewPostModalOpen"
             :class="['fixed z-50 top-0 left-0 right-0 bottom-0 flex justify-center items-center backdrop-brightness-50 transition-all duration-300']">
-            <span class="absolute top-4 right-8 text-white text-3xl cursor-pointer" @click="handleCloseModal">x</span>
+            <span class="absolute top-4 right-8 text-black text-3xl cursor-pointer" @click="handleCloseModal">x</span>
             <Motion v-if="post.postId" :initial="{ opacity: 0, scale: 1.2 }" :animate="{ opacity: 1, scale: 1 }" :transition="{ duration: 0.1 }"
                 :exit="{ opacity: 0, scale: 1.2 }"
                 class="w-8/12 h-[95%] bg-gradient-to-br from-[#8a3ab9] via-[ #bc2a8d] to-[#fbad50] flex rounded-sm p-1">
