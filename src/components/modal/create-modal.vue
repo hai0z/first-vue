@@ -89,6 +89,7 @@ export default {
                 selectedImage.value = null
                 modalStore.setOpenCreateModal(false)
                 caption.value = ""
+                window.scrollTo(0, 0)
             })
         }
         return {
