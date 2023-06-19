@@ -2,7 +2,7 @@
     <div class="w-full h-screen flex justify-center items-center">
         <div class="flex justify-center items-center flex-col">
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Instagram_logo.svg/1280px-Instagram_logo.svg.png" alt="" class="w-40">
-            <button class="btn btn-ghost" @click="handleLogin">Login with google</button>
+            <button class="btn btn-link" @click="handleLogin">Login with google</button>
         </div>
     </div>
 </template>

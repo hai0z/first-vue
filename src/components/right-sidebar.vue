@@ -1,10 +1,14 @@
 <template>
     <div class="w-4/12 h-screen hidden lg:flex py-14 flex-col">
         <div class="flex items-center w-9/12">
-            <img src='https://i.pinimg.com/originals/30/b5/49/30b54999b098050158ed13a1ecdcaab0.jpg' alt="" class="h-16 w-16 rounded-full object-cover">
+            <RouterLink to="/profile">
+                <img :src="authStore.userInfo.photoURL" alt="" class="h-16 w-16 rounded-full object-cover">
+            </RouterLink>
             <div class="flex flex-col ml-2">
-                <span class="font-semibold">Manchester United</span>
-                <span class="text-gray-500">MU</span>
+                <RouterLink to="/profile">
+                    <span class="font-semibold">{{ authStore.userInfo.displayName }}</span>
+                </RouterLink>
+                <span class="text-gray-500">{{ authStore.userInfo.userName }}</span>
             </div>
         </div>
         <div class="py-2">
@@ -24,7 +28,13 @@
     </div>
 </template>
 <script lang="ts">
+import { useAuthStore } from '@/store/useAuthStore';
+
 export default {
-    name: 'right-sidebar'
+    name: 'right-sidebar',
+    setup() {
+        const authStore = useAuthStore()
+        return { authStore }
+    }
 }
 </script>
