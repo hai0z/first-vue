@@ -108,8 +108,11 @@ export default {
         }
         const clickOutside = (event: any) => {
             if (event.target.classList.contains('modal-wrapper')) {
+                router.back()
                 modalStore.setOpenViewPostModal(false)
+                post.value = {} as Post
                 document.body.style.overflowY = 'scroll'
+                input.value = ""
             }
         }
         watch(
