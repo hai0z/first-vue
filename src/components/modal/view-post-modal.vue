@@ -109,6 +109,7 @@ export default {
         const clickOutside = (event: any) => {
             if (event.target.classList.contains('modal-wrapper')) {
                 modalStore.setOpenViewPostModal(false)
+                document.body.style.overflowY = 'scroll'
             }
         }
         watch(
