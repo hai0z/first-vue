@@ -30,7 +30,20 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/profile',
-    component: () => import('../views/profile-page.vue')
+    component: () => import('../views/profile-page.vue'),
+    children: [
+      {
+        path: '/',
+        component: () => import('../views/profile-page.vue')
+      },
+      {
+        path: '/p/:id',
+        component: () => import('../views/profile-page.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      }
+    ]
   }
 ]
 

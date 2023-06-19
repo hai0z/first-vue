@@ -15,9 +15,9 @@
             </div>
             <div class="divider"></div>
             <div class="grid grid-cols-3 gap-2">
-                <RouterLink to="" v-for="(post, index) in authStore.userPosts" :key="index">
+                <div v-for="(post, index) in authStore.userPosts" :key="index" class="cursor-pointer" @click="openModal(post.postId)">
                     <img :src="post.imageUrl[0]" alt="user-post" class="object-cover w-[300px] h-[300px]">
-                </RouterLink>
+                </div>
             </div>
         </div>
     </div>
@@ -25,13 +25,20 @@
 <script lang="ts">
 import leftSidebar from '@/components/left-sidebar.vue';
 import { useAuthStore } from '@/store/useAuthStore';
+import { useModalStore } from '@/store/useModalStore';
+import { useRouter } from 'vue-router';
 export default {
     name: 'profile-page',
     components: { leftSidebar },
     setup() {
         const authStore = useAuthStore()
-
-        return { authStore }
+        const modalStore = useModalStore()
+        const router = useRouter()
+        const openModal = (postId: string) => {
+            modalStore.setOpenViewPostModal(true)
+            router.push(`/p/${postId}`)
+        }
+        return { authStore, modalStore, openModal }
     }
 }
 </script>
