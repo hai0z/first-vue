@@ -33,7 +33,7 @@ import { useModalStore } from '@/store/useModalStore'
 import { ref } from 'vue'
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { auth, db, storage } from '../../firebase/config'
-import { addDoc, collection, doc, setDoc } from 'firebase/firestore'
+import { collection, doc, setDoc } from 'firebase/firestore'
 import { useAuthStore } from '@/store/useAuthStore'
 export default {
     name: 'createModal',
@@ -85,7 +85,6 @@ export default {
                     time: Date.now(),
                     postId: newRef.id
                 });
-
                 loading.value = false
                 selectedImage.value = null
                 modalStore.setOpenCreateModal(false)
