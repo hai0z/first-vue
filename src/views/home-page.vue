@@ -6,11 +6,13 @@
                 <storyAvatar />
             </div>
         </div>
-        <div class="mt-16 w-7/12">
+        <div class="mt-16 w-7/12" v-if="displayedPosts.length > 0">
             <div v-for="(post, index) in displayedPosts" :key='index'>
                 <userPost :post="post" />
             </div>
-            <div ref="scrollTrigger"></div>
+        </div>
+        <div v-else class="w-7/12ustify-center items-center h-[calc(100%-80px)] flex pt-4">
+            <p class="font-semibold">Chưa có bài đăng</p>
         </div>
     </div>
     <rightSidebar />
@@ -30,7 +32,7 @@ export default {
     setup() {
         const fakeStory = ref([1, 2, 3, 4, 5, 6, 7, 8])
         const authStore = useAuthStore()
-        const scrollTrigger = ref<any>(null);
+
         const displayedPostsCount = ref(3);
 
         const loadMorePosts = () => {
@@ -54,7 +56,7 @@ export default {
             window.addEventListener('scroll', handleScroll);
         });
         return {
-            fakeStory, authStore, scrollTrigger, displayedPosts
+            fakeStory, authStore, displayedPosts
         }
     }
 }
