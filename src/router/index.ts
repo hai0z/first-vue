@@ -30,11 +30,14 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/profile',
-    component: () => import('../views/profile-page.vue'),
     children: [
       {
-        path: '/',
+        path: '/profile',
         component: () => import('../views/profile-page.vue')
+      },
+      {
+        path: '/profile/:userUid',
+        component: () => import('../views/other-profile.vue')
       },
       {
         path: '/profile/p/:id',

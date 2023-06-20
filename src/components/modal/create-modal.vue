@@ -89,7 +89,7 @@ export default {
                 selectedImage.value = null
                 modalStore.setOpenCreateModal(false)
                 caption.value = ""
-                window.scrollTo(0, 0)
+                window.scrollTo({ behavior: 'smooth', top: 0, left: 0 })
             })
         }
         return {

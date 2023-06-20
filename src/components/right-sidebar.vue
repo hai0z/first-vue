@@ -11,18 +11,17 @@
                 <span class="text-gray-500">{{ authStore.userInfo.userName }}</span>
             </div>
         </div>
-        <div class="py-2">
+        <div class="py-2 w-9/12">
             <p class="font-semibold text-gray-500">Suggested for you</p>
-            <div class="w-9/12 py-2 space-y-2">
-                <div class="flex h-fit w-full items-center" v-for="(_, index) in [1, 2, 3, 4]" :key="index">
-                    <img src='https://i.pinimg.com/originals/30/b5/49/30b54999b098050158ed13a1ecdcaab0.jpg' alt=""
-                        class="h-8 w-8 rounded-full object-cover">
+            <div v-for="user in authStore.suggestUser.slice(0, 4)" :key="user.uid" class="w-9/12 py-2 space-y-2">
+                <RouterLink :to="`/profile/${user.uid}`" class="flex h-fit w-full items-center">
+                    <img :src='user.photoURL' alt="" class="h-8 w-8 rounded-full object-cover">
                     <div class="flex flex-col ml-2">
-                        <span class="font-semibold text-xs">Manchester United</span>
-                        <span class="text-gray-500 text-xs">MU</span>
+                        <span class="font-semibold text-xs">{{ user.displayName }}</span>
+                        <span class="text-gray-500 text-xs">{{ user.userName }}</span>
                     </div>
                     <span class="text-primary ml-auto">follow</span>
-                </div>
+                </RouterLink>
             </div>
         </div>
     </div>
