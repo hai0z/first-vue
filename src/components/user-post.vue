@@ -24,7 +24,7 @@
             <i class="fa-regular fa-bookmark ml-auto text-2xl"></i>
         </div>
         <div class="post-info">
-            <span class="font-semibold text-base-content">{{ post?.like.length }} likes</span>
+            <span class="font-semibold text-base-content cursor-pointer" @click="handleViewLikePost(post.like)">{{ post?.like.length }} likes</span>
             <p class="line-clamp-2">
                 <span class="font-semibold text-base-content">{{ post?.userDisplayName }}</span> {{
                     post?.content }}
@@ -83,8 +83,13 @@ export default {
             })
             input.value = ""
         }
+        const handleViewLikePost = (likeArr: string[]) => {
+            modalStore.likeModalOpen = true
+            modalStore.likeArr = likeArr
+        }
         return {
-            modalStore, router, handleClick, formatDistance, postStore, auth, isLikePost, input, authStore, handleComment
+            modalStore, router, handleClick, formatDistance, postStore, auth, isLikePost, input, authStore, handleComment,
+            handleViewLikePost
         }
     }
 }
