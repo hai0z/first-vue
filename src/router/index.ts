@@ -17,6 +17,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: '/p/:id',
         component: homePageVue,
+        name: 'p',
         meta: {
           requiresAuth: true
         }
@@ -41,7 +42,16 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: '/profile/p/:id',
+        name: 'profile',
         component: () => import('../views/profile-page.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: '/profile/:userUid/p/:id',
+        name: 'other-profile',
+        component: () => import('../views/other-profile.vue'),
         meta: {
           requiresAuth: true
         }

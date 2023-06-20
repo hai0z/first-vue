@@ -69,7 +69,7 @@ export default {
         const input = ref('')
         const handleClick = (postId: string) => {
             modalStore.setOpenViewPostModal(true)
-            router.push(`/p/${postId}`)
+            router.push({ name: 'p', params: { id: postId } })
             document.body.style.overflow = 'hidden'
         }
         const handleComment = () => {

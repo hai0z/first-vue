@@ -36,7 +36,7 @@ export default {
         const router = useRouter()
         const openModal = (postId: string) => {
             modalStore.setOpenViewPostModal(true)
-            router.push(`/profile/p/${postId}`)
+            router.push({ name: 'profile', params: { id: postId } })
         }
         return { authStore, modalStore, openModal }
     }

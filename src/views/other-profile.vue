@@ -51,7 +51,7 @@ export default {
 
         const openModal = (postId: string) => {
             modalStore.setOpenViewPostModal(true)
-            router.push(`/profile/p/${postId}`)
+            router.push({ name: 'other-profile', params: { id: postId } })
         }
 
         const getUserInfo = async (uid: string) => {
