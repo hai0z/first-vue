@@ -7,7 +7,7 @@
                     <storyAvatar />
                 </div>
             </div>
-            <div class="mt-16 w-9/12" v-if="displayedPosts.length > 0">
+            <div class="mt-16 w-7/12" v-if="displayedPosts.length > 0">
                 <div v-for="(post, index) in displayedPosts" :key='index'>
                     <userPost :post="post" />
                 </div>

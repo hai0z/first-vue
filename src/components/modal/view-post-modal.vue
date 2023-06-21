@@ -5,7 +5,7 @@
             <span class="absolute top-4 right-8 text-black text-3xl cursor-pointer" @click="handleCloseModal">x</span>
             <Motion v-if="post.postId" :initial="{ opacity: 0, scale: 1.2 }" :animate="{ opacity: 1, scale: 1 }" :transition="{ duration: 0.1 }"
                 @click.stop :exit="{ opacity: 0, scale: 1.2 }"
-                class="w-8/12 h-[95%] bg-gradient-to-br from-[#8a3ab9] via-[ #bc2a8d] to-[#fbad50] flex rounded-sm p-1">
+                class="w-9/12 h-[95%] bg-gradient-to-br from-[#8a3ab9] via-[ #bc2a8d] to-[#fbad50] flex rounded-sm p-1">
                 <div class="flex h-full w-full">
                     <div class="w-2/3 bg-black">
                         <img :src="post?.imageUrl[0]" alt="" class="w-full object-contain h-full">
