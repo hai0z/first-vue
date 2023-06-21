@@ -8,7 +8,7 @@
       ]"
     >
       <span
-        class="absolute top-4 right-8 text-black text-3xl cursor-pointer"
+        class="absolute top-4 right-8 text-white text-3xl cursor-pointer"
         @click="handleCloseModal"
         >x</span
       >

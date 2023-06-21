@@ -122,6 +122,7 @@
         </svg>
         <button v-show="!noficationShow">Nofication</button>
       </div>
+
       <RouterLink class="flex gap-3 hover:bg-primary p-4 rounded-md" to="/profile">
         <img :src="authStore.userInfo.photoURL" class="h-7 w-7 rounded-full" />
         <span v-show="!noficationShow" class="line-clamp-1">{{
@@ -136,36 +137,52 @@
   <Presence>
     <Motion
       :class="[
-        'h-screen overflow-y-scroll fixed left-24 transition-all duration-300 opacity-0 z-1',
-        noficationShow ? 'w-96 opacity-100 z-50' : 'w-0'
+        'h-screen overflow-y-auto fixed left-24 transition-all duration-300 opacity-0 z-1',
+        noficationShow ? 'w-96 opacity-100 boder-r border' : 'w-0'
       ]"
     >
       <span class="p-4 block font-bold text-2xl">Nofication</span>
-      <div class="h-[2000px] p-4">
-        <span>Chưa có thông báo gì hết!</span>
+      <span v-if="noficationStore.listNofications.length == 0">Chưa có thông báo!</span>
+      <div class="p-4 flex flex-col gap-8">
+        <RouterLink
+          :to="`/`"
+          v-for="(nofication, index) in noficationStore.listNofications"
+          :key="index"
+          class="flex gap-4"
+        >
+          <img :src="nofication.from.photoURL" alt="" class="h-8 w-8 rounded-full" />
+          <div class="flex">
+            <div>
+              <span>{{ nofication.message }}</span>
+              <p class="text-xs text-zinc-400">
+                {{ formatDistance(nofication.createdAt, Date.now(), { addSuffix: true }) }}
+              </p>
+            </div>
+            <img
+              v-if="nofication.type == 'COMMENT' || nofication.type == 'LIKE'"
+              :src="nofication.post?.imageUrl?.[0]"
+              alt=""
+              class="h-10 w-10"
+            />
+          </div>
+        </RouterLink>
       </div>
     </Motion>
   </Presence>
 </template>
-<script lang="ts">
+<script lang="ts" setup>
 import { auth } from '@/firebase/config'
 import { useAuthStore } from '@/store/useAuthStore'
 import { useModalStore } from '@/store/useModalStore'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { Motion, Presence } from 'motion/vue'
-export default {
-  name: 'left-sidebar',
-  components: { Motion, Presence },
-  setup() {
-    const modalStore = useModalStore()
-    const authStore = useAuthStore()
-    const noficationShow = ref(false)
-    return {
-      modalStore,
-      auth,
-      authStore,
-      noficationShow
-    }
-  }
-}
+import { useNoficationStore } from '@/store/noficationStrore'
+import { formatDistance } from 'date-fns'
+const modalStore = useModalStore()
+const authStore = useAuthStore()
+const noficationShow = ref(false)
+const noficationStore = useNoficationStore()
+onMounted(() => {
+  noficationStore.getNofications()
+})
 </script>

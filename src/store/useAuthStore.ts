@@ -27,6 +27,7 @@ export const useAuthStore = defineStore('auth', () => {
   const isAuthenticated = ref(false)
   const userInfo = ref<UserInfo>({} as UserInfo)
   const userPosts = ref<Post[]>([])
+  const loading = ref(true)
   const router = useRouter()
 
   const suggestUser = ref<UserInfo[]>([])
@@ -36,6 +37,7 @@ export const useAuthStore = defineStore('auth', () => {
     const userRef = doc(db, 'users', uid)
     const user = await getDoc(userRef)
     userInfo.value = { ...(user.data() as UserInfo) }
+    loading.value = false
   }
   const getUserPosts = (uid: string) => {
     const q = query(collection(db, `posts`), orderBy('time', 'desc'), where('userUid', '==', uid))
@@ -117,5 +119,13 @@ export const useAuthStore = defineStore('auth', () => {
       }
     })
   }
-  return { isAuthenticated, userInfo, onAuthStateChange, userPosts, suggestUser, followingPost }
+  return {
+    isAuthenticated,
+    userInfo,
+    onAuthStateChange,
+    userPosts,
+    suggestUser,
+    followingPost,
+    loading
+  }
 })

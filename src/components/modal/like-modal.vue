@@ -32,6 +32,7 @@ import type { UserInfo } from '@/store/useAuthStore'
 import { useModalStore } from '@/store/useModalStore'
 import { query, where, collection, getDocs } from 'firebase/firestore'
 import { ref, watch } from 'vue'
+
 const modalStore = useModalStore()
 const data = ref<Partial<UserInfo>[]>([])
 const getData = async (value: string[]) => {

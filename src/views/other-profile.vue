@@ -7,7 +7,7 @@
         <div class="flex flex-col">
           <div class="flex gap-8 items-center">
             <span class="font-semibold text-lg">{{ userInfo.displayName }}</span>
-            <button class="btn btn-primary btn-sm" @click="handleFollow">
+            <button class="btn btn-primary btn-sm capitalize" @click="handleFollow">
               {{ follower.includes(auth.currentUser?.uid as string) ? 'following' : 'follow' }}
             </button>
           </div>
@@ -26,7 +26,22 @@
           class="cursor-pointer"
           @click="openModal(post.postId)"
         >
-          <img :src="post.imageUrl[0]" alt="user-post" class="object-cover w-[300px] h-[300px]" />
+          <div class="relative group">
+            <img
+              :src="post.imageUrl[0]"
+              alt="user-post"
+              class="object-cover w-[300px] h-[300px] transition-all duration-200 group-hover:brightness-50"
+              loading="lazy"
+            />
+            <div
+              class="absolute h-full w-full top-0 left-0 opacity-0 transition-all duration-200 group-hover:opacity-100 flex justify-center items-center gap-4"
+            >
+              <div :class="['fa-heart text-2xl cursor-pointer fa-solid text-white']"></div>
+              <span class="text-white"> {{ post.like.length }} </span>
+              <i class="fa-regular fa-comment text-2xl cursor-pointer text-white"></i>
+              <span class="text-white">{{ post.comment.length }}</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -51,8 +66,10 @@ import {
 import { useRoute, useRouter } from 'vue-router'
 import { ref } from 'vue'
 import type { Post } from '@/types'
+import { useNoficationStore } from '@/store/noficationStrore'
 
 const modalStore = useModalStore()
+const noficationStrore = useNoficationStore()
 const router = useRouter()
 const route = useRoute()
 const userInfo = ref<UserInfo>({} as UserInfo)
@@ -85,6 +102,7 @@ const handleFollow = async () => {
   if (!follower.value.includes(auth.currentUser?.uid as string)) {
     setDoc(doc(db, `follow/${auth.currentUser?.uid}/userFollowing/${route.params.userUid}`), {})
     setDoc(doc(db, `follow/${route.params.userUid}/userFollower/${auth.currentUser?.uid}`), {})
+    noficationStrore.createNofication(route.params.userUid as string, 'FOLLOW')
   } else {
     deleteDoc(doc(db, `follow/${auth.currentUser?.uid}/userFollowing/${route.params.userUid}`))
     deleteDoc(doc(db, `follow/${route.params.userUid}/userFollower/${auth.currentUser?.uid}`))

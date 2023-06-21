@@ -4,12 +4,18 @@
     <div class="post-header flex flex-row justify-between mb-2 items-center">
       <div class="flex flex-row items-center">
         <img :src="post.userAvatar" class="h-10 w-10 rounded-full" />
-        <span class="font-semibold text-base-content text-sm ml-2"
-          >{{ post?.userDisplayName }}
+        <span class="font-semibold text-base-content text-sm ml-2">
+          <RouterLink
+            :to="`${
+              post.userUid == auth.currentUser?.uid ? '/profile' : `/profile/${post.userUid}`
+            }`"
+          >
+            {{ post?.userDisplayName }}
+          </RouterLink>
           <span class="text-gray-400 font-normal">
             • {{ formatDistance(post.time, new Date(), { addSuffix: true }) }}
-          </span></span
-        >
+          </span>
+        </span>
       </div>
       <i class="fa-solid fa-ellipsis text-lg cursor-pointer"></i>
     </div>
@@ -28,7 +34,7 @@
                 ? 'fa-solid text-[rgb(255,48,64)]'
                 : 'fa-regular'
             ]"
-            @click="postStore.toggleLike(post.postId, auth.currentUser?.uid as string)"
+            @click="handleLikePost"
           ></Motion>
         </Presence>
         <i
@@ -46,7 +52,11 @@
         >{{ post?.like.length }} likes</span
       >
       <p class="line-clamp-2">
-        <span class="font-semibold text-base-content">{{ post?.userDisplayName }}</span>
+        <RouterLink
+          :to="`${post.userUid == auth.currentUser?.uid ? '/profile' : `/profile/${post.userUid}`}`"
+          class="font-semibold text-base-content"
+          >{{ post?.userDisplayName }}</RouterLink
+        >
         {{ post?.content }}
       </p>
       <button class="text-zinc-400" @click="handleClick(post.postId)">
@@ -79,7 +89,7 @@
     </div>
   </div>
 </template>
-<script lang="ts">
+<script lang="ts" setup>
 import { useModalStore } from '@/store/useModalStore'
 import { usePostStore } from '@/store/usePostStore'
 import type { Post } from '@/types'
@@ -89,54 +99,42 @@ import { formatDistance } from 'date-fns'
 import { auth } from '@/firebase/config'
 import { Motion, Presence } from 'motion/vue'
 import { useAuthStore } from '@/store/useAuthStore'
-export default {
-  name: 'user-post',
-  props: {
-    post: {
-      type: Object as PropType<Post>,
-      required: true
-    }
-  },
-  components: { Motion, Presence },
-  setup(props) {
-    const modalStore = useModalStore()
-    const postStore = usePostStore()
-    const router = useRouter()
-    const authStore = useAuthStore()
-    const isLikePost = ref(props.post.like.includes(auth.currentUser?.uid as string))
-    const input = ref('')
-    const handleClick = (postId: string) => {
-      modalStore.setOpenViewPostModal(true)
-      router.push({ name: 'p', params: { id: postId } })
-      document.body.style.overflow = 'hidden'
-    }
-    const handleComment = () => {
-      postStore.commentToPost(props.post.postId, {
-        userAvatar: authStore.userInfo.photoURL,
-        content: input.value,
-        userUid: authStore.userInfo.uid,
-        time: Date.now(),
-        userDisplayName: authStore.userInfo.displayName
-      })
-      input.value = ''
-    }
-    const handleViewLikePost = (likeArr: string[]) => {
-      modalStore.likeModalOpen = true
-      modalStore.likeArr = likeArr
-    }
-    return {
-      modalStore,
-      router,
-      handleClick,
-      formatDistance,
-      postStore,
-      auth,
-      isLikePost,
-      input,
-      authStore,
-      handleComment,
-      handleViewLikePost
-    }
+import { useNoficationStore } from '@/store/noficationStrore'
+
+const props = defineProps({
+  post: {
+    type: Object as PropType<Post>,
+    required: true
   }
+})
+const modalStore = useModalStore()
+const postStore = usePostStore()
+const router = useRouter()
+const authStore = useAuthStore()
+const noficationStore = useNoficationStore()
+
+const isLikePost = ref(props.post.like.includes(auth.currentUser?.uid as string))
+const input = ref('')
+const handleClick = (postId: string) => {
+  modalStore.setOpenViewPostModal(true)
+  router.push({ name: 'p', params: { id: postId } })
+  document.body.style.overflow = 'hidden'
+}
+const handleComment = () => {
+  postStore.commentToPost(props.post.postId, {
+    userAvatar: authStore.userInfo.photoURL,
+    content: input.value,
+    userUid: authStore.userInfo.uid,
+    time: Date.now(),
+    userDisplayName: authStore.userInfo.displayName
+  })
+  input.value = ''
+}
+const handleViewLikePost = (likeArr: string[]) => {
+  modalStore.likeModalOpen = true
+  modalStore.likeArr = likeArr
+}
+const handleLikePost = () => {
+  postStore.toggleLike(props.post.postId, auth.currentUser?.uid as string)
 }
 </script>

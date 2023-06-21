@@ -4,12 +4,14 @@ import router from './router'
 import './index.css'
 import { createPinia } from 'pinia'
 import { useAuthStore } from './store/useAuthStore'
+import 'vue3-toastify/dist/index.css'
 const pinia = createPinia()
 const app = createApp(App)
 
 app.use(pinia)
 app.use(router)
 const authStore = useAuthStore()
+
 authStore.onAuthStateChange()
 
 app.mount('#app')

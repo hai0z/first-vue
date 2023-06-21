@@ -24,7 +24,7 @@
         <span>No file choosen</span>
         <button class="btn btn-link" @click="openFileInput">Select from computer</button>
       </div>
-      <div v-else-if="selectedImage" class="flex h-[95%]">
+      <div v-else-if="selectedImage" class="flex h-[90%]">
         <div class="w-2/3 bg-black/50 flex justify-center items-center">
           <img :src="selectedImage" alt="Selected Image" class="object-contain h-full" />
         </div>
