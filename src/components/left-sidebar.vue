@@ -32,7 +32,7 @@
     <div class="mt-8 space-y-3 w-full">
       <RouterLink
         to="/"
-        class="flex gap-3 hover:bg-zinc-200 rounded-md p-4 items-center overflow-hidden"
+        class="flex gap-3 hover:bg-primary rounded-md p-4 items-center overflow-hidden"
       >
         <svg
           aria-label="Home"
@@ -55,7 +55,7 @@
         <span v-show="!noficationShow" class="font-bold">Home</span>
       </RouterLink>
       <div
-        class="flex gap-3 hover:bg-zinc-200 p-4 rounded-md cursor-pointer"
+        class="flex gap-3 hover:bg-primary p-4 rounded-md cursor-pointer"
         @click="() => modalStore.setOpenCreateModal(true)"
       >
         <svg
@@ -103,13 +103,13 @@
       </div>
       <div
         @click="noficationShow = !noficationShow"
-        class="flex gap-3 hover:bg-zinc-200 p-4 rounded-md cursor-pointer"
+        class="flex gap-3 hover:bg-primary p-4 rounded-md cursor-pointer"
       >
         <svg
           aria-label="Notifications"
           class="x1lliihq x1n2onr6"
-          color="rgb(0, 0, 0)"
-          fill="rgb(0, 0, 0)"
+          color="var(--p)"
+          fill="var(--p)"
           height="24"
           role="img"
           viewBox="0 0 24 24"
@@ -122,7 +122,7 @@
         </svg>
         <button v-show="!noficationShow">Nofication</button>
       </div>
-      <RouterLink class="flex gap-3 hover:bg-zinc-200 p-4 rounded-md" to="/profile">
+      <RouterLink class="flex gap-3 hover:bg-primary p-4 rounded-md" to="/profile">
         <img :src="authStore.userInfo.photoURL" class="h-7 w-7 rounded-full" />
         <span v-show="!noficationShow" class="line-clamp-1">{{
           authStore.userInfo.displayName

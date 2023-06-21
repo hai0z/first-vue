@@ -19,7 +19,7 @@
         :transition="{ duration: 0.1 }"
         @click.stop
         :exit="{ opacity: 0, scale: 1.2 }"
-        class="w-9/12 h-[95%] bg-gradient-to-br from-[#8a3ab9] via-[ #bc2a8d] to-[#fbad50] flex rounded-sm p-1"
+        class="w-9/12 h-[95%] bg-gradient-to-br from-[#8a3ab9] via-[ #bc2a8d] to-[#fbad50] flex rounded-sm p-[1px]"
       >
         <div class="flex h-full w-full">
           <div class="w-2/3 bg-black">
@@ -108,7 +108,7 @@
     </div>
   </Presence>
 </template>
-<script lang="ts">
+<script lang="ts" setup>
 import { useModalStore } from '@/store/useModalStore'
 import { usePostStore } from '@/store/usePostStore'
 import { useAuthStore } from '@/store/useAuthStore'
@@ -120,66 +120,48 @@ import type { Post } from '@/types'
 import { auth, db } from '@/firebase/config'
 import { formatDistance } from 'date-fns'
 
-export default {
-  name: 'viewPost',
-  components: { Motion, Presence },
-  setup() {
-    const modalStore = useModalStore()
-    const route = useRoute()
-    const router = useRouter()
-    const post = ref<Post>({} as Post)
-    const postStore = usePostStore()
-    const authStore = useAuthStore()
-    const input = ref('')
-    const commentRef = ref<any>()
-    const handleCloseModal = () => {
-      router.back()
-      modalStore.setOpenViewPostModal(false)
-      post.value = {} as Post
-      document.body.style.overflowY = 'scroll'
-      input.value = ''
-    }
-    const handleComment = () => {
-      postStore.commentToPost(post.value.postId, {
-        userAvatar: authStore.userInfo.photoURL,
-        content: input.value,
-        userUid: authStore.userInfo.uid,
-        time: Date.now(),
-        userDisplayName: authStore.userInfo.displayName
-      })
-      input.value = ''
-    }
-    const clickOutside = (event: any) => {
-      if (event.target.classList.contains('modal-wrapper')) {
-        router.back()
-        modalStore.setOpenViewPostModal(false)
-        post.value = {} as Post
-        document.body.style.overflowY = 'scroll'
-        input.value = ''
-      }
-    }
-    watch(
-      () => route.params.id,
-      async (newVal) => {
-        if (newVal != undefined) {
-          onSnapshot(doc(db, `posts/${newVal}`), (doc) => {
-            post.value = doc.data() as Post
-          })
-        }
-      }
-    )
-    return {
-      modalStore,
-      handleCloseModal,
-      post,
-      formatDistance,
-      postStore,
-      auth,
-      input,
-      handleComment,
-      commentRef,
-      clickOutside
-    }
+const modalStore = useModalStore()
+const route = useRoute()
+const router = useRouter()
+const post = ref<Post>({} as Post)
+const postStore = usePostStore()
+const authStore = useAuthStore()
+const input = ref('')
+const commentRef = ref<any>()
+const handleCloseModal = () => {
+  router.back()
+  modalStore.setOpenViewPostModal(false)
+  post.value = {} as Post
+  document.body.style.overflowY = 'scroll'
+  input.value = ''
+}
+const handleComment = () => {
+  postStore.commentToPost(post.value.postId, {
+    userAvatar: authStore.userInfo.photoURL,
+    content: input.value,
+    userUid: authStore.userInfo.uid,
+    time: Date.now(),
+    userDisplayName: authStore.userInfo.displayName
+  })
+  input.value = ''
+}
+const clickOutside = (event: any) => {
+  if (event.target.classList.contains('modal-wrapper')) {
+    router.back()
+    modalStore.setOpenViewPostModal(false)
+    post.value = {} as Post
+    document.body.style.overflowY = 'scroll'
+    input.value = ''
   }
 }
+watch(
+  () => route.params.id,
+  async (newVal) => {
+    if (newVal != undefined) {
+      onSnapshot(doc(db, `posts/${newVal}`), (doc) => {
+        post.value = doc.data() as Post
+      })
+    }
+  }
+)
 </script>
