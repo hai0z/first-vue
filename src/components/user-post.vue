@@ -22,21 +22,15 @@
     <img :src="post.imageUrl[0]" class="object-cover rounded-sm w-full" loading="lazy" />
     <div class="post-action flex flex-row items-center py-2">
       <div class="flex gap-4">
-        <Presence>
-          <Motion
-            :initial="{ scale: 1.05 }"
-            :animate="{ scale: 1 }"
-            :transition="{ duration: 0.3 }"
-            :key="isLikePost + ''"
-            :class="[
-              'fa-heart text-2xl cursor-pointer',
-              post.like.includes(auth.currentUser?.uid + '')
-                ? 'fa-solid text-[rgb(255,48,64)]'
-                : 'fa-regular'
-            ]"
-            @click="handleLikePost"
-          ></Motion>
-        </Presence>
+        <i
+          :class="[
+            'fa-heart text-2xl cursor-pointer z-1',
+            post.like.includes(auth.currentUser?.uid + '')
+              ? 'fa-solid text-[rgb(255,48,64)]'
+              : 'fa-regular'
+          ]"
+          @click="handleLikePost"
+        ></i>
         <i
           class="fa-regular fa-comment text-2xl cursor-pointer"
           @click="handleClick(post.postId)"
@@ -74,7 +68,7 @@
         <input
           type="text"
           placeholder="Add a comment..."
-          class="w-full border-none focus:border-none focus:outline-none input p-0"
+          class="w-full border-none focus:border-none focus:outline-none input p-0 z-1"
           v-model="input"
         />
         <button

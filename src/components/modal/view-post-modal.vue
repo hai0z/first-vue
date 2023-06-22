@@ -19,13 +19,13 @@
         :transition="{ duration: 0.1 }"
         @click.stop
         :exit="{ opacity: 0, scale: 1.2 }"
-        class="w-9/12 h-[95%] bg-gradient-to-br from-[#8a3ab9] via-[ #bc2a8d] to-[#fbad50] flex rounded-sm p-[1px]"
+        class="md:w-9/12 lg:h-[95vh] bg-gradient-to-br from-[#8a3ab9] via-[ #bc2a8d] to-[#fbad50] flex rounded-sm p-[1px] w-full"
       >
-        <div class="flex h-full w-full">
-          <div class="w-2/3 bg-black">
+        <div class="flex h-full w-full md:flex-row flex-col">
+          <div class="md:w-2/3 bg-black w-full">
             <img :src="post?.imageUrl[0]" alt="" class="w-full object-contain h-full" />
           </div>
-          <div class="w-1/3 flex flex-col pl-4 py-3 h-full bg-base-100">
+          <div class="md:w-1/3 flex flex-col pl-4 py-3 h-full bg-base-100 w-full">
             <div class="flex flex-row gap-2 items-center">
               <img :src="post.userAvatar" class="h-10 w-10 rounded-full" />
               <span class="font-semibold">{{ post.userDisplayName }}</span>

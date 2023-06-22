@@ -135,21 +135,22 @@ const handleComment = () => {
   })
   input.value = ''
 }
-watch(
-  () => route.params.id,
-  () => {
-    const docRef = doc(db, 'posts', route.params.id as string)
-    if (route.params.id != undefined) {
-      onSnapshot(docRef, (snapShot) => (post.value = snapShot.data() as Post))
-    }
-    loading.value = false
-  }
-)
-onMounted(async () => {
+const getPost = () => {
   const docRef = doc(db, 'posts', route.params.id as string)
   if (route.params.id != undefined) {
     onSnapshot(docRef, (snapShot) => (post.value = snapShot.data() as Post))
   }
   loading.value = false
+}
+watch(
+  () => route.params.id,
+  () => {
+    getPost()
+  }
+)
+onMounted(async () => {
+  if (route.params.id != undefined) {
+    getPost()
+  }
 })
 </script>
