@@ -108,7 +108,7 @@
 import leftSidebar from '@/components/left-sidebar.vue'
 import { usePostStore } from '@/store/usePostStore'
 import type { Post } from '@/types'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { formatDistance } from 'date-fns'
 import { auth, db } from '@/firebase/config'
@@ -135,7 +135,16 @@ const handleComment = () => {
   })
   input.value = ''
 }
-
+watch(
+  () => route.params.id,
+  () => {
+    const docRef = doc(db, 'posts', route.params.id as string)
+    if (route.params.id != undefined) {
+      onSnapshot(docRef, (snapShot) => (post.value = snapShot.data() as Post))
+    }
+    loading.value = false
+  }
+)
 onMounted(async () => {
   const docRef = doc(db, 'posts', route.params.id as string)
   if (route.params.id != undefined) {
