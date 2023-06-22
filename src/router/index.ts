@@ -24,7 +24,10 @@ const routes: Array<RouteRecordRaw> = [
       }
     ]
   },
-
+  {
+    path: '/nofication/p/:id',
+    component: () => import('../views/nofication-page.vue')
+  },
   {
     path: '/login',
     component: () => import('../views/login-page.vue')

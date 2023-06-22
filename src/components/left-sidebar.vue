@@ -137,33 +137,34 @@
   <Presence>
     <Motion
       :class="[
-        'h-screen overflow-y-auto fixed left-24 transition-all duration-300 opacity-0 z-1',
-        noficationShow ? 'w-96 opacity-100 boder-r border' : 'w-0'
+        'h-screen overflow-y-auto fixed left-24 transition-all duration-150 opacity-0 z-1',
+        noficationShow ? 'w-96 opacity-100 boder-r border' : 'w-0 opacity-0 duration-0'
       ]"
     >
       <span class="p-4 block font-bold text-2xl">Nofication</span>
-      <span v-if="noficationStore.listNofications.length == 0">Chưa có thông báo!</span>
-      <div class="p-4 flex flex-col gap-8">
+      <span v-if="noficationStore.listNofications.length == 0" class="p-4">Chưa có thông báo!</span>
+      <div class="p-4 flex flex-col gap-8 line-clamp-1">
         <RouterLink
-          :to="`/`"
+          :to="`${
+            nofication.type == 'COMMENT' || nofication.type == 'LIKE'
+              ? `/nofication/p/${nofication.post?.postId}`
+              : ''
+          }`"
           v-for="(nofication, index) in noficationStore.listNofications"
           :key="index"
           class="flex gap-4"
         >
           <img :src="nofication.from.photoURL" alt="" class="h-8 w-8 rounded-full" />
-          <div class="flex">
-            <div>
+          <div class="flex items-center w-full">
+            <div class="w-[80%]">
               <span>{{ nofication.message }}</span>
               <p class="text-xs text-zinc-400">
                 {{ formatDistance(nofication.createdAt, Date.now(), { addSuffix: true }) }}
               </p>
             </div>
-            <img
-              v-if="nofication.type == 'COMMENT' || nofication.type == 'LIKE'"
-              :src="nofication.post?.imageUrl?.[0]"
-              alt=""
-              class="h-10 w-10"
-            />
+            <div v-if="nofication.type == 'COMMENT' || nofication.type == 'LIKE'" class="ml-auto">
+              <img :src="nofication.post?.imageUrl?.[0]" alt="" class="h-10 w-10" />
+            </div>
           </div>
         </RouterLink>
       </div>

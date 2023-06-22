@@ -49,5 +49,15 @@ export const usePostStore = defineStore('posts', () => {
       console.log('Post not found.')
     }
   }
-  return { toggleLike, commentToPost }
+
+  const getPostById = async (postId: string) => {
+    const docRef = doc(db, 'posts', postId)
+    const docSnap = await getDoc(docRef)
+    if (docSnap.exists()) {
+      return docSnap.data() as Post
+    } else {
+      console.log('Post not found.')
+    }
+  }
+  return { toggleLike, commentToPost, getPostById }
 })
