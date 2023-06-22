@@ -3,7 +3,7 @@
   <div class="w-7/12 ml-[18%] flex flex-col mt-10 items-end">
     <div class="flex justify-center flex-col items-center w-10/12">
       <div class="story h-20 flex flex-row items-center gap-5 w-9/12 overflow-hidden">
-        <div v-for="(_, index) in fakeStory" :key="index">
+        <div v-for="(_, index) in fakeStory" :key="index" class="pt-1">
           <storyAvatar />
         </div>
       </div>
@@ -18,20 +18,18 @@
     </div>
   </div>
   <rightSidebar />
-  <likeModal />
 </template>
 <script lang="ts">
 import storyAvatar from '../components/story-avatar.vue'
 import leftSidebar from '../components/left-sidebar.vue'
 import rightSidebar from '../components/right-sidebar.vue'
 import userPost from '../components/user-post.vue'
-import likeModal from '@/components/modal/like-modal.vue'
 import { onMounted, ref, computed } from 'vue'
 import { useAuthStore } from '@/store/useAuthStore'
 
 export default {
   name: 'App',
-  components: { storyAvatar, leftSidebar, rightSidebar, userPost, likeModal },
+  components: { storyAvatar, leftSidebar, rightSidebar, userPost },
   setup() {
     const fakeStory = ref([1, 2, 3, 4, 5, 6, 7, 8])
     const authStore = useAuthStore()

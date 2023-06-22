@@ -1,7 +1,7 @@
 <template>
   <div
     :class="[
-      'border-r-[0.5px] h-screen fixed px-4 py-8 transition-all duration-500 flex flex-col items-center',
+      'border-r-[0.5px] border-base-300 h-screen fixed px-4 py-8 transition-all duration-500 flex flex-col items-center',
       !noficationShow ? 'w-[18%]' : 'w-24'
     ]"
   >
@@ -9,7 +9,7 @@
       <img
         v-if="!noficationShow"
         class="object-cover w-28 ml-4 self-start"
-        src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Instagram_logo.svg/1280px-Instagram_logo.svg.png"
+        :src="`https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Instagram_logo.svg/1280px-Instagram_logo.svg.png`"
         alt=""
       />
       <svg
@@ -138,7 +138,9 @@
     <Motion
       :class="[
         'h-screen overflow-y-auto fixed left-24 transition-all duration-150 opacity-0 z-1',
-        noficationShow ? 'w-96 opacity-100 boder-r border' : 'w-0 opacity-0 duration-0'
+        noficationShow
+          ? 'w-96 opacity-100 border-r border-base-300'
+          : 'w-0 opacity-0 duration-0 border-0 border-none'
       ]"
     >
       <span class="p-4 block font-bold text-2xl">Nofication</span>

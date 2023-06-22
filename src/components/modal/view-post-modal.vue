@@ -25,7 +25,7 @@
           <div class="w-2/3 bg-black">
             <img :src="post?.imageUrl[0]" alt="" class="w-full object-contain h-full" />
           </div>
-          <div class="w-[550px] flex flex-col pl-4 py-3 h-full bg-base-100">
+          <div class="w-1/3 flex flex-col pl-4 py-3 h-full bg-base-100">
             <div class="flex flex-row gap-2 items-center">
               <img :src="post.userAvatar" class="h-10 w-10 rounded-full" />
               <span class="font-semibold">{{ post.userDisplayName }}</span>
@@ -79,8 +79,16 @@
                 </div>
                 <i class="fa-regular fa-bookmark ml-auto text-2xl mr-4"></i>
               </div>
-              <div>
-                <span class="font-semibold">{{ post.like.length }}{{ ' ' }}</span>
+              <div
+                @click="
+                  () => {
+                    modalStore.likeArr = post.like
+                    modalStore.likeModalOpen = true
+                  }
+                "
+                class="cursor-pointer"
+              >
+                <span class="font-semibold cursor-pointer">{{ post.like.length }}{{ ' ' }}</span>
                 <span>likes</span>
                 <p class="text-zinc-500 text-sm">{{ formatDistance(post.time, Date.now()) }}</p>
               </div>
@@ -89,7 +97,7 @@
                 <textarea
                   type="text"
                   ref="commentRef"
-                  class="outline-none w-full"
+                  class="outline-none bg-transparent w-full"
                   placeholder="Add a comment..."
                   v-model="input"
                 ></textarea>

@@ -3,12 +3,12 @@
     <leftSidebar />
     <div class="pl-[18%] flex justify-center h-[80vh]" v-if="!loading">
       <div
-        class="w-10/12 bg-base-100 mt-10 flex bg-gradient-to-br from-[#8a3ab9] via-[ #bc2a8d] to-[#fbad50] flex rounded-sm p-[1px]"
+        class="w-8/12 bg-base-100 mt-10 flex bg-gradient-to-br from-[#8a3ab9] via-[ #bc2a8d] to-[#fbad50] flex rounded-sm p-[1px]"
       >
-        <div class="w-1/2 bg-black">
+        <div class="w-2/3 bg-black">
           <img :src="post?.imageUrl[0]" alt="" class="w-full h-full object-contain" />
         </div>
-        <div class="w-1/2 bg-blue-300">
+        <div class="w-1/3 bg-blue-300">
           <div class="flex flex-col pl-4 py-3 h-full bg-base-100">
             <div class="flex flex-row gap-2 items-center">
               <img :src="post?.userAvatar" class="h-10 w-10 rounded-full" />
@@ -65,7 +65,15 @@
                 </div>
                 <i class="fa-regular fa-bookmark ml-auto text-2xl mr-4"></i>
               </div>
-              <div>
+              <div
+                @click="
+                  () => {
+                    modalStore.likeArr = post?.like
+                    modalStore.likeModalOpen = true
+                  }
+                "
+                class="cursor-pointer"
+              >
                 <span class="font-semibold">{{ post?.like.length }}{{ ' ' }}</span>
                 <span>likes</span>
                 <p class="text-zinc-500 text-sm">
@@ -103,8 +111,11 @@ import type { Post } from '@/types'
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { formatDistance } from 'date-fns'
-import { auth } from '@/firebase/config'
+import { auth, db } from '@/firebase/config'
 import { useAuthStore } from '@/store/useAuthStore'
+import { doc, onSnapshot } from 'firebase/firestore'
+import { useModalStore } from '@/store/useModalStore'
+
 const route = useRoute()
 const postStore = usePostStore()
 const post = ref<Post | undefined>({} as Post)
@@ -112,6 +123,8 @@ const loading = ref(true)
 const authStore = useAuthStore()
 const input = ref('')
 const commentRef = ref<any>()
+const modalStore = useModalStore()
+
 const handleComment = () => {
   postStore.commentToPost(post.value?.postId as string, {
     userAvatar: authStore.userInfo.photoURL,
@@ -122,8 +135,12 @@ const handleComment = () => {
   })
   input.value = ''
 }
+
 onMounted(async () => {
-  post.value = await postStore.getPostById(route.params.id as string)
+  const docRef = doc(db, 'posts', route.params.id as string)
+  if (route.params.id != undefined) {
+    onSnapshot(docRef, (snapShot) => (post.value = snapShot.data() as Post))
+  }
   loading.value = false
 })
 </script>

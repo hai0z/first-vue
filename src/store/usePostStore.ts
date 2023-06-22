@@ -1,4 +1,4 @@
-import { doc, updateDoc, arrayRemove, arrayUnion, getDoc } from 'firebase/firestore'
+import { doc, updateDoc, arrayRemove, arrayUnion, getDoc, onSnapshot } from 'firebase/firestore'
 import { db } from '../firebase/config'
 import { defineStore } from 'pinia'
 import type { Post } from '@/types'
@@ -50,14 +50,5 @@ export const usePostStore = defineStore('posts', () => {
     }
   }
 
-  const getPostById = async (postId: string) => {
-    const docRef = doc(db, 'posts', postId)
-    const docSnap = await getDoc(docRef)
-    if (docSnap.exists()) {
-      return docSnap.data() as Post
-    } else {
-      console.log('Post not found.')
-    }
-  }
-  return { toggleLike, commentToPost, getPostById }
+  return { toggleLike, commentToPost }
 })

@@ -1,7 +1,8 @@
 <template>
   <div
-    class="h-full w-full fixed inset-0 backdrop-brightness-50 flex justify-center items-center"
+    class="h-full w-full fixed inset-0 backdrop-brightness-50 flex justify-center items-center z-[99] modal-wrapper"
     v-show="modalStore.likeModalOpen"
+    @click="clickOutside"
   >
     <div class="h-96 w-96 bg-base-100 rounded-lg overflow-y-auto relative">
       <span
@@ -49,6 +50,13 @@ const getData = async (value: string[]) => {
       data.value = []
       throw err
     }
+  }
+}
+const clickOutside = (event: any) => {
+  if (event.target.classList.contains('modal-wrapper')) {
+    modalStore.likeModalOpen = false
+    modalStore.likeArr = undefined
+    data.value = []
   }
 }
 watch(
