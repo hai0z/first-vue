@@ -91,9 +91,8 @@ import { ref, type PropType } from 'vue'
 import { useRouter } from 'vue-router'
 import { formatDistance } from 'date-fns'
 import { auth } from '@/firebase/config'
-import { Motion, Presence } from 'motion/vue'
+
 import { useAuthStore } from '@/store/useAuthStore'
-import { useNoficationStore } from '@/store/noficationStrore'
 
 const props = defineProps({
   post: {
@@ -105,9 +104,7 @@ const modalStore = useModalStore()
 const postStore = usePostStore()
 const router = useRouter()
 const authStore = useAuthStore()
-const noficationStore = useNoficationStore()
 
-const isLikePost = ref(props.post.like.includes(auth.currentUser?.uid as string))
 const input = ref('')
 const handleClick = (postId: string) => {
   modalStore.setOpenViewPostModal(true)

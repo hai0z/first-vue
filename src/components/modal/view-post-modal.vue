@@ -4,7 +4,7 @@
       v-show="modalStore.viewPostModalOpen"
       @click="clickOutside"
       :class="[
-        'fixed z-50 top-0 left-0 right-0 bottom-0 flex justify-center items-center backdrop-brightness-50 transition-all duration-300 modal-wrapper'
+        'fixed z-[9999] top-0 left-0 right-0 bottom-0 flex justify-center items-center backdrop-brightness-50 transition-all duration-300 modal-wrapper '
       ]"
     >
       <span
@@ -21,7 +21,7 @@
         :exit="{ opacity: 0, scale: 1.2 }"
         class="md:w-9/12 lg:h-[95vh] bg-gradient-to-br from-[#8a3ab9] via-[ #bc2a8d] to-[#fbad50] flex rounded-sm p-[1px] w-full"
       >
-        <div class="flex h-full w-full md:flex-row flex-col">
+        <div class="flex md:flex-row flex-col">
           <div class="md:w-2/3 bg-black w-full">
             <img :src="post?.imageUrl[0]" alt="" class="w-full object-contain h-full" />
           </div>
@@ -93,7 +93,7 @@
                 <p class="text-zinc-500 text-sm">{{ formatDistance(post.time, Date.now()) }}</p>
               </div>
               <div class="divider"></div>
-              <div class="flex justify-between">
+              <div class="flex justify-between h-full items-center">
                 <textarea
                   type="text"
                   ref="commentRef"
@@ -102,7 +102,7 @@
                   v-model="input"
                 ></textarea>
                 <button
-                  class="btn btn-link"
+                  class="text-primary text-xl mx-4"
                   v-show="input.trim().length > 0"
                   @click="handleComment"
                 >

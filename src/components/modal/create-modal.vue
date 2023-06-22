@@ -39,7 +39,7 @@
             cols="30"
             rows="10"
             placeholder="Write a caption..."
-            class="m-2 p-2 focus:outline-none"
+            class="m-2 p-2 focus:outline-none textarea"
             v-model="caption"
           ></textarea>
           <button :class="['btn btn-link mx-2 my-2']" @click="handleAddPost">

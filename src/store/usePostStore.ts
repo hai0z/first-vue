@@ -1,4 +1,4 @@
-import { doc, updateDoc, arrayRemove, arrayUnion, getDoc, onSnapshot } from 'firebase/firestore'
+import { doc, updateDoc, arrayRemove, arrayUnion, getDoc } from 'firebase/firestore'
 import { db } from '../firebase/config'
 import { defineStore } from 'pinia'
 import type { Post } from '@/types'

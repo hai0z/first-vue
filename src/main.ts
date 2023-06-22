@@ -14,4 +14,11 @@ const authStore = useAuthStore()
 
 authStore.onAuthStateChange()
 
+let currentTheme = localStorage.getItem('theme')
+if (currentTheme == null) {
+  currentTheme = 'cmyk'
+}
+
+document.getElementsByTagName('html')[0].setAttribute('data-theme', currentTheme)
+
 app.mount('#app')
