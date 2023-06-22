@@ -10,8 +10,8 @@
             <span class="font-semibold text-base-content"
               >{{ authStore.userPosts.length }} posts</span
             >
-            <span>0 follower</span>
-            <span>0 following</span>
+            <span>{{ follower.length }} follower</span>
+            <span>{{ following.length }} following</span>
           </div>
         </div>
       </div>
@@ -46,15 +46,37 @@
 </template>
 <script lang="ts" setup>
 import leftSidebar from '@/components/left-sidebar.vue'
+import { auth, db } from '@/firebase/config'
 import { useAuthStore } from '@/store/useAuthStore'
 import { useModalStore } from '@/store/useModalStore'
+import { collection, onSnapshot, query } from 'firebase/firestore'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const authStore = useAuthStore()
 const modalStore = useModalStore()
 const router = useRouter()
+
+const follower = ref<string[]>([])
+const following = ref<string[]>([])
+
+const getFollow = () => {
+  const followerRef = query(
+    collection(db, `follow/${auth.currentUser?.uid as string}/userFollower`)
+  )
+  onSnapshot(followerRef, (querySnapshot) => {
+    follower.value = querySnapshot.docs.map((doc) => doc.id)
+  })
+  const followingRef = query(
+    collection(db, `follow/${auth.currentUser?.uid as string}/userFollowing`)
+  )
+  onSnapshot(followingRef, (querySnapshot) => {
+    following.value = querySnapshot.docs.map((doc) => doc.id)
+  })
+}
 const openModal = (postId: string) => {
   modalStore.setOpenViewPostModal(true)
   router.push({ name: 'profile', params: { id: postId } })
 }
+getFollow()
 </script>

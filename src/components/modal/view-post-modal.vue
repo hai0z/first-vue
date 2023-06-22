@@ -21,7 +21,7 @@
         :exit="{ opacity: 0, scale: 1.2 }"
         class="md:w-9/12 lg:h-[95vh] bg-gradient-to-br from-[#8a3ab9] via-[ #bc2a8d] to-[#fbad50] flex rounded-sm p-[1px] w-full"
       >
-        <div class="flex md:flex-row flex-col">
+        <div class="flex md:flex-row flex-col w-full h-full">
           <div class="md:w-2/3 bg-black w-full">
             <img :src="post?.imageUrl[0]" alt="" class="w-full object-contain h-full" />
           </div>
@@ -42,7 +42,7 @@
                 </div>
               </div>
               <div
-                v-for="(comment, index) in post.comment"
+                v-for="(comment, index) in post.comment.sort((a, b) => +b.time - +a.time)"
                 :key="index"
                 class="flex flex-row items-center my-8"
               >
