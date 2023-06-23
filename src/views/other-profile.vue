@@ -102,7 +102,7 @@ const handleFollow = async () => {
   if (!follower.value.includes(auth.currentUser?.uid as string)) {
     setDoc(doc(db, `follow/${auth.currentUser?.uid}/userFollowing/${route.params.userUid}`), {})
     setDoc(doc(db, `follow/${route.params.userUid}/userFollower/${auth.currentUser?.uid}`), {})
-    noficationStrore.createNofication(route.params.userUid as string, 'FOLLOW')
+    noficationStrore.createNofication(route.params.userUid as string, 'FOLLOW', undefined)
   } else {
     deleteDoc(doc(db, `follow/${auth.currentUser?.uid}/userFollowing/${route.params.userUid}`))
     deleteDoc(doc(db, `follow/${route.params.userUid}/userFollower/${auth.currentUser?.uid}`))

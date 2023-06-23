@@ -34,18 +34,46 @@ export const useNoficationStore = defineStore('nofications', () => {
     post?: Partial<Post>
   ) => {
     const notificationRef = collection(db, `notifications/${recipientId}/userNotifications`)
-    const notificationMessage = await generateNotificationMessage(type, post)
 
     if (recipientId !== auth.currentUser?.uid) {
       // Kiểm tra xem đã có thông báo liên quan đến bài viết này chưa
-      const querySnapshot = await getDocs(
-        query(notificationRef, where('post.postId', '==', post?.postId), where('type', '==', type))
-      )
-      if (querySnapshot.empty) {
-        // Tạo thông báo mới nếu không có thông báo liên quan đến bài viết này
+      if (post != undefined) {
+        const notificationMessage = await generateNotificationMessage(type, post)
+
+        const querySnapshot = await getDocs(
+          query(
+            notificationRef,
+            where('post.postId', '==', post?.postId),
+            where('type', '==', type)
+          )
+        )
+        if (querySnapshot.empty) {
+          // Tạo thông báo mới nếu không có thông báo liên quan đến bài viết này
+          await addDoc(notificationRef, {
+            message: notificationMessage,
+            post,
+            createdAt: Date.now(),
+            from: {
+              userName: auth.currentUser?.displayName as string,
+              photoURL: auth.currentUser?.photoURL as string,
+              uid: auth.currentUser?.uid
+            },
+            type,
+            isRead: false
+          })
+        } else {
+          // Cập nhật thông báo hiện có nếu đã có thông báo liên quan đến bài viết này
+          const existingNotification = querySnapshot.docs[0]
+          await updateDoc(doc(notificationRef, existingNotification.id), {
+            message: notificationMessage,
+            createdAt: Date.now(),
+            isRead: false
+          })
+        }
+      } else {
         await addDoc(notificationRef, {
-          message: notificationMessage,
-          post,
+          message: `${auth.currentUser?.displayName} đã bắt đầu theo dõi bạn`,
+          post: {},
           createdAt: Date.now(),
           from: {
             userName: auth.currentUser?.displayName as string,
@@ -55,14 +83,7 @@ export const useNoficationStore = defineStore('nofications', () => {
           type,
           isRead: false
         })
-      } else {
-        // Cập nhật thông báo hiện có nếu đã có thông báo liên quan đến bài viết này
-        const existingNotification = querySnapshot.docs[0]
-        await updateDoc(doc(notificationRef, existingNotification.id), {
-          message: notificationMessage,
-          createdAt: Date.now(),
-          isRead: false
-        })
+        console.log('abc')
       }
 
       // Cập nhật số lượng thông báo của người nhận
@@ -210,7 +231,7 @@ export const useNoficationStore = defineStore('nofications', () => {
             </div>
           </div>`,
               {
-                autoClose: 5000,
+                autoClose: 3000,
                 dangerouslyHTMLString: true
               }
             )
