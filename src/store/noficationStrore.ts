@@ -6,10 +6,12 @@ import {
   collection,
   doc,
   getDoc,
+  getDocs,
   onSnapshot,
   orderBy,
   query,
-  updateDoc
+  updateDoc,
+  where
 } from 'firebase/firestore'
 import { ref } from 'vue'
 import type { Post } from '@/types'
@@ -31,12 +33,18 @@ export const useNoficationStore = defineStore('nofications', () => {
     type: 'LIKE' | 'COMMENT' | 'FOLLOW',
     post?: Partial<Post>
   ) => {
-    const noficationRef = collection(db, `nofications/${recipientId}/userNofication`)
-    const nofication = ref({} as INofication)
-    switch (type) {
-      case 'LIKE':
-        nofication.value = {
-          message: `${auth.currentUser?.displayName} đã thích ảnh của bạn`,
+    const notificationRef = collection(db, `notifications/${recipientId}/userNotifications`)
+    const notificationMessage = await generateNotificationMessage(type, post)
+
+    if (recipientId !== auth.currentUser?.uid) {
+      // Kiểm tra xem đã có thông báo liên quan đến bài viết này chưa
+      const querySnapshot = await getDocs(
+        query(notificationRef, where('post.postId', '==', post?.postId), where('type', '==', type))
+      )
+      if (querySnapshot.empty) {
+        // Tạo thông báo mới nếu không có thông báo liên quan đến bài viết này
+        await addDoc(notificationRef, {
+          message: notificationMessage,
           post,
           createdAt: Date.now(),
           from: {
@@ -46,56 +54,112 @@ export const useNoficationStore = defineStore('nofications', () => {
           },
           type,
           isRead: false
-        }
-        break
-      case 'COMMENT':
-        nofication.value = {
-          message: `${auth.currentUser?.displayName} đã bình luận về bài viết của bạn`,
-          post,
-          createdAt: Date.now(),
-          from: {
-            userName: auth.currentUser?.displayName as string,
-            photoURL: auth.currentUser?.photoURL as string,
-            uid: auth.currentUser?.uid
-          },
-          type,
-          isRead: false
-        }
-        break
-      case 'FOLLOW':
-        nofication.value = {
-          message: `${auth.currentUser?.displayName} đã bắt đầu theo dõi bạn`,
-          post: {},
-          createdAt: Date.now(),
-          from: {
-            userName: auth.currentUser?.displayName as string,
-            photoURL: auth.currentUser?.photoURL as string,
-            uid: auth.currentUser?.uid
-          },
-          type,
-          isRead: false
-        }
-        break
-      default:
-        nofication.value = {} as INofication
-    }
-    if (recipientId != auth.currentUser?.uid) {
-      await addDoc(noficationRef, nofication.value)
-      const noficationCount = await getDoc(doc(db, 'users', recipientId))
-      let count = 0
-      if (isNaN(noficationCount?.data()?.noficationCount)) {
-        count = 0
+        })
       } else {
-        count = noficationCount?.data()?.noficationCount
+        // Cập nhật thông báo hiện có nếu đã có thông báo liên quan đến bài viết này
+        const existingNotification = querySnapshot.docs[0]
+        await updateDoc(doc(notificationRef, existingNotification.id), {
+          message: notificationMessage,
+          createdAt: Date.now(),
+          isRead: false
+        })
       }
+
+      // Cập nhật số lượng thông báo của người nhận
+
+      const notificationUnRead = await getDocs(
+        query(
+          collection(db, `notifications/${recipientId}/userNotifications`),
+          where('isRead', '==', false)
+        )
+      )
       await updateDoc(doc(db, 'users', recipientId), {
-        noficationCount: count + 1
+        noficationCount: notificationUnRead.size
       })
     }
   }
+
+  const generateNotificationMessage = async (
+    type: 'LIKE' | 'COMMENT' | 'FOLLOW',
+    post?: Partial<Post>
+  ) => {
+    let message = ''
+    const likers = await getLikers(post?.postId as string)
+    const comments = await getCommentor(post?.postId as string)
+    switch (type) {
+      case 'LIKE':
+        if (likers.length === 1) {
+          message = `${await getAuthorName(likers[0])} đã thích bài viết của bạn`
+        } else if (likers.length === 2) {
+          message = `${await getAuthorName(likers[0])} và ${await getAuthorName(
+            likers[1]
+          )} đã thích bài viết của bạn`
+        } else if (likers.length > 2) {
+          message = `${await getAuthorName(likers[0])} và ${
+            likers.length - 1
+          } người khác đã thích bài viết của bạn`
+        }
+        break
+      case 'COMMENT':
+        if (comments.length === 1) {
+          message = `${await getAuthorName(comments[0])} đã bình luận về bài viết của bạn`
+        } else if (comments.length === 2) {
+          message = `${await getAuthorName(comments[0])} và ${await getAuthorName(
+            comments[1]
+          )} đã bình luận về bài viết của bạn`
+        } else if (comments.length > 2) {
+          message = `${await getAuthorName(comments[0])} và ${
+            comments.length - 1
+          } người khác đã bình luận về bài viết của bạn`
+        }
+        break
+      case 'FOLLOW':
+        message = `${auth.currentUser?.displayName} đã bắt đầu theo dõi bạn`
+        break
+      default:
+        break
+    }
+    return message
+  }
+
+  const getLikers = async (postId: string) => {
+    const likesRef = query(collection(db, `posts`), where('postId', '==', postId))
+    const querySnapshot = await getDocs(likesRef)
+    const likers: string[] = []
+    for (let i = 0; i < querySnapshot.docs[0].data().like.length; i++) {
+      likers.push(querySnapshot.docs[0].data().like[i])
+    }
+    return likers
+  }
+  const getCommentor = async (postId: string) => {
+    const commentRef = query(collection(db, `posts`), where('postId', '==', postId))
+    const querySnapshot = await getDocs(commentRef)
+    const comments: string[] = []
+    const commentData = querySnapshot.docs[0].data().comment
+    const uidSet = new Set()
+    const uniqueUids = []
+
+    commentData.forEach((comment: Post) => {
+      if (!uidSet.has(comment.userUid)) {
+        uidSet.add(comment.userUid)
+        uniqueUids.push(comment.userUid)
+      }
+    })
+
+    for (let i = 0; i < uniqueUids.length; i++) {
+      comments.push(querySnapshot.docs[0].data().comment[i].userUid)
+    }
+    return comments
+  }
+
+  const getAuthorName = async (userUid: string) => {
+    const userDoc = await getDoc(doc(db, 'users', userUid))
+    const userName = userDoc.data()?.displayName || ''
+    return userName
+  }
   const getNofications = () => {
     const noficationRef = query(
-      collection(db, `nofications/${auth.currentUser?.uid}/userNofication`),
+      collection(db, `notifications/${auth.currentUser?.uid}/userNotifications`),
       orderBy('createdAt', 'desc')
     )
     onSnapshot(noficationRef, (querySnapshot) => {
@@ -111,27 +175,36 @@ export const useNoficationStore = defineStore('nofications', () => {
   }
 
   const listeningNofication = (userId: string) => {
-    const noficationRef = query(collection(db, `nofications/${userId}/userNofication`))
+    const noficationRef = query(collection(db, `notifications/${userId}/userNotifications`))
     onSnapshot(noficationRef, (snapshot) => {
       snapshot.docChanges().forEach((change) => {
-        if (change.type === 'added') {
+        if (
+          change.type === 'added' ||
+          (change.type === 'modified' && change.doc.data().isRead == false)
+        ) {
           if (!isFirstConnection) {
             toast(
-              `<div class="flex gap-4 items-center"
+              `<div class="flex gap-4 items-center w-full"
               >
-            <img src=${change.doc.data().from.photoURL} alt="" class="h-8 w-8 rounded-full" />
-            <div class="flex items-center justify-center">
+            <img src=${
+              change.doc.data().from.photoURL
+            } alt="" class="h-8 w-8 rounded-full object-cover" />
+            <div class="flex items-center justify-center gap-4">
              
-                <span>${change.doc.data().message}</span>
+                <span class="w-full">${change.doc.data().message}</span>
              
               ${
                 change.doc.data().type == 'COMMENT'
-                  ? ` <img src=${change.doc.data().post.imageUrl} alt="" class="h-10 w-10" />`
+                  ? ` <img src=${
+                      change.doc.data().post.imageUrl
+                    } alt="" class="h-10 w-10 object-cover" />`
                   : ''
               }
               ${
                 change.doc.data().type == 'LIKE'
-                  ? ` <img src=${change.doc.data().post.imageUrl} alt="" class="h-10 w-10" />`
+                  ? ` <img src=${
+                      change.doc.data().post.imageUrl
+                    } alt="" class="h-10 w-10 object-cover" />`
                   : ''
               }
             </div>

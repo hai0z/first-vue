@@ -1,4 +1,4 @@
-import { query, updateDoc } from 'firebase/firestore'
+import { query, updateDoc, writeBatch } from 'firebase/firestore'
 // auth.js
 import { onAuthStateChanged } from 'firebase/auth'
 import { defineStore } from 'pinia'
@@ -51,10 +51,23 @@ export const useAuthStore = defineStore('auth', () => {
     })
   }
   const updateNoficationCount = async () => {
+    const notificationRef = collection(
+      db,
+      `notifications/${auth.currentUser?.uid}/userNotifications`
+    )
+    const q = query(notificationRef, where('isRead', '==', false))
+    const querySnapshot = await getDocs(q)
+    const batch = writeBatch(db)
+    querySnapshot.forEach((docSnapshot) => {
+      const docRef = doc(notificationRef, docSnapshot.id)
+      batch.update(docRef, { isRead: true })
+    })
+    await batch.commit()
     const userRef = doc(db, 'users', auth.currentUser?.uid as string)
     await updateDoc(userRef, {
       noficationCount: 0
     })
+    console.log('Đã cập nhật thành công')
   }
   const fetchFollowingPost = () => {
     onSnapshot(

@@ -42,7 +42,7 @@
         <i class="fa-regular fa-heart text-2xl"></i>
         <button v-show="!noficationShow" class="hidden lg:block">Nofication</button>
         <span
-          v-show="authStore.userInfo.noficationCount as number > 0"
+          v-show="authStore.userInfo.noficationCount     as number > 0"
           class="badge badge-primary absolute right-0 group-hover:badge-secondary"
           >{{ authStore.userInfo.noficationCount }}</span
         >
@@ -84,7 +84,7 @@
           :key="index"
           class="flex gap-4"
         >
-          <img :src="nofication.from.photoURL" alt="" class="h-8 w-8 rounded-full" />
+          <img :src="nofication.from.photoURL" alt="" class="h-8 w-8 rounded-full object-cover" />
           <div class="flex items-center w-full">
             <div class="w-[80%]">
               <span>{{ nofication.message }}</span>
@@ -93,7 +93,7 @@
               </p>
             </div>
             <div v-if="nofication.type == 'COMMENT' || nofication.type == 'LIKE'" class="ml-auto">
-              <img :src="nofication.post?.imageUrl?.[0]" alt="" class="h-10 w-10" />
+              <img :src="nofication.post?.imageUrl?.[0]" alt="" class="h-10 w-10 object-cover" />
             </div>
           </div>
         </RouterLink>
