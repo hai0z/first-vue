@@ -36,17 +36,7 @@
         <button v-show="!noficationShow" class="hidden lg:block">Create</button>
       </div>
       <div
-        @click="
-          () => {
-            const isOpen = noficationShow
-            if (!isOpen) {
-              authStore.updateNoficationCount()
-              noficationShow = true
-            } else {
-              noficationShow = false
-            }
-          }
-        "
+        @click="hanldeNoficationOpen"
         class="flex gap-3 hover:bg-primary hover:text-primary-content p-4 rounded-md cursor-pointer relative group"
       >
         <i class="fa-regular fa-heart text-2xl"></i>
@@ -134,6 +124,15 @@ const changeTheme = () => {
     document.getElementsByTagName('html')[0].setAttribute('data-theme', 'cmyk')
     localStorage.setItem('theme', 'cmyk')
     currentTheme.value = 'cmyk'
+  }
+}
+const hanldeNoficationOpen = () => {
+  const isOpen = noficationShow.value
+  if (!isOpen) {
+    authStore.updateNoficationCount()
+    noficationShow.value = true
+  } else {
+    noficationShow.value = false
   }
 }
 onMounted(() => {
