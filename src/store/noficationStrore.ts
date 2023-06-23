@@ -34,12 +34,11 @@ export const useNoficationStore = defineStore('nofications', () => {
     post?: Partial<Post>
   ) => {
     const notificationRef = collection(db, `notifications/${recipientId}/userNotifications`)
+    const notificationMessage = await generateNotificationMessage(type, post)
 
     if (recipientId !== auth.currentUser?.uid) {
       // Kiểm tra xem đã có thông báo liên quan đến bài viết này chưa
       if (post != undefined) {
-        const notificationMessage = await generateNotificationMessage(type, post)
-
         const querySnapshot = await getDocs(
           query(
             notificationRef,
@@ -72,7 +71,7 @@ export const useNoficationStore = defineStore('nofications', () => {
         }
       } else {
         await addDoc(notificationRef, {
-          message: `${auth.currentUser?.displayName} đã bắt đầu theo dõi bạn`,
+          message: notificationMessage,
           post: {},
           createdAt: Date.now(),
           from: {
@@ -105,10 +104,10 @@ export const useNoficationStore = defineStore('nofications', () => {
     post?: Partial<Post>
   ) => {
     let message = ''
-    const likers = await getLikers(post?.postId as string)
-    const comments = await getCommentor(post?.postId as string)
     switch (type) {
-      case 'LIKE':
+      case 'LIKE': {
+        const likers = await getLikers(post?.postId as string)
+
         if (likers.length === 1) {
           message = `${await getAuthorName(likers[0])} đã thích bài viết của bạn`
         } else if (likers.length === 2) {
@@ -121,7 +120,11 @@ export const useNoficationStore = defineStore('nofications', () => {
           } người khác đã thích bài viết của bạn`
         }
         break
-      case 'COMMENT':
+      }
+
+      case 'COMMENT': {
+        const comments = await getCommentor(post?.postId as string)
+
         if (comments.length === 1) {
           message = `${await getAuthorName(comments[0])} đã bình luận về bài viết của bạn`
         } else if (comments.length === 2) {
@@ -134,6 +137,7 @@ export const useNoficationStore = defineStore('nofications', () => {
           } người khác đã bình luận về bài viết của bạn`
         }
         break
+      }
       case 'FOLLOW':
         message = `${auth.currentUser?.displayName} đã bắt đầu theo dõi bạn`
         break
