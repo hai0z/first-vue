@@ -1,7 +1,16 @@
 import { defineStore } from 'pinia'
 import { auth, db } from '@/firebase/config'
 import type { UserInfo } from './useAuthStore'
-import { addDoc, collection, onSnapshot, orderBy, query } from 'firebase/firestore'
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  onSnapshot,
+  orderBy,
+  query,
+  updateDoc
+} from 'firebase/firestore'
 import { ref } from 'vue'
 import type { Post } from '@/types'
 import { toast } from 'vue3-toastify'
@@ -72,6 +81,16 @@ export const useNoficationStore = defineStore('nofications', () => {
     }
     if (recipientId != auth.currentUser?.uid) {
       await addDoc(noficationRef, nofication.value)
+      const noficationCount = await getDoc(doc(db, 'users', recipientId))
+      let count = 0
+      if (isNaN(noficationCount?.data()?.noficationCount)) {
+        count = 0
+      } else {
+        count = noficationCount?.data()?.noficationCount
+      }
+      await updateDoc(doc(db, 'users', recipientId), {
+        noficationCount: count + 1
+      })
     }
   }
   const getNofications = () => {

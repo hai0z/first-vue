@@ -1,19 +1,11 @@
+import { query, updateDoc } from 'firebase/firestore'
 // auth.js
 import { onAuthStateChanged } from 'firebase/auth'
 import { defineStore } from 'pinia'
 import { auth, db } from '../firebase/config'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import {
-  collection,
-  doc,
-  getDoc,
-  query,
-  orderBy,
-  onSnapshot,
-  where,
-  getDocs
-} from 'firebase/firestore'
+import { collection, doc, orderBy, onSnapshot, where, getDocs } from 'firebase/firestore'
 import type { Post } from '@/types'
 
 export type UserInfo = {
@@ -22,6 +14,7 @@ export type UserInfo = {
   photoURL: string
   uid: string
   userName: string
+  noficationCount?: number
 }
 export const useAuthStore = defineStore('auth', () => {
   const isAuthenticated = ref(false)
@@ -34,9 +27,10 @@ export const useAuthStore = defineStore('auth', () => {
   const followingPost = ref<Post[]>([])
 
   const getUserInfo = async (uid: string) => {
-    const userRef = doc(db, 'users', uid)
-    const user = await getDoc(userRef)
-    userInfo.value = { ...(user.data() as UserInfo) }
+    const q = doc(db, 'users', uid)
+    onSnapshot(q, (querySnapshot) => {
+      userInfo.value = { ...(querySnapshot.data() as UserInfo) }
+    })
     loading.value = false
   }
   const getUserPosts = (uid: string) => {
@@ -54,6 +48,12 @@ export const useAuthStore = defineStore('auth', () => {
         like: doc.data().like,
         postId: doc.id
       }))
+    })
+  }
+  const updateNoficationCount = async () => {
+    const userRef = doc(db, 'users', auth.currentUser?.uid as string)
+    await updateDoc(userRef, {
+      noficationCount: 0
     })
   }
   const fetchFollowingPost = () => {
@@ -126,6 +126,7 @@ export const useAuthStore = defineStore('auth', () => {
     userPosts,
     suggestUser,
     followingPost,
-    loading
+    loading,
+    updateNoficationCount
   }
 })

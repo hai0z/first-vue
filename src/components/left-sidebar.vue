@@ -36,11 +36,26 @@
         <button v-show="!noficationShow" class="hidden lg:block">Create</button>
       </div>
       <div
-        @click="noficationShow = !noficationShow"
-        class="flex gap-3 hover:bg-primary hover:text-primary-content p-4 rounded-md cursor-pointer"
+        @click="
+          () => {
+            const isOpen = noficationShow
+            if (!isOpen) {
+              authStore.updateNoficationCount()
+              noficationShow = true
+            } else {
+              noficationShow = false
+            }
+          }
+        "
+        class="flex gap-3 hover:bg-primary hover:text-primary-content p-4 rounded-md cursor-pointer relative group"
       >
         <i class="fa-regular fa-heart text-2xl"></i>
         <button v-show="!noficationShow" class="hidden lg:block">Nofication</button>
+        <span
+          v-show="authStore.userInfo.noficationCount as number > 0"
+          class="badge badge-primary absolute right-0 group-hover:badge-secondary"
+          >{{ authStore.userInfo.noficationCount }}</span
+        >
       </div>
 
       <RouterLink

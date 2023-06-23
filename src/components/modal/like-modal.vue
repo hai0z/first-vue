@@ -1,6 +1,6 @@
 <template>
   <div
-    class="h-full w-full fixed inset-0 backdrop-brightness-50 flex justify-center items-center z-[99] modal-wrapper"
+    class="h-full w-full fixed inset-0 backdrop-brightness-50 flex justify-center items-center z-[99999] modal-wrapper"
     v-show="modalStore.likeModalOpen"
     @click="clickOutside"
   >
