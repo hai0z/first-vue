@@ -35,8 +35,8 @@ export const useNoficationStore = defineStore('nofications', () => {
   ) => {
     const notificationRef = collection(db, `notifications/${recipientId}/userNotifications`)
     const notificationMessage = await generateNotificationMessage(type, post)
-
     if (recipientId !== auth.currentUser?.uid) {
+      // người nhận phải khác với người gửi thì mới gửi thông báo
       // Kiểm tra xem đã có thông báo liên quan đến bài viết này chưa
       if (post != undefined) {
         const querySnapshot = await getDocs(
@@ -70,6 +70,7 @@ export const useNoficationStore = defineStore('nofications', () => {
           })
         }
       } else {
+        //dành cho loại thông báo là follow
         await addDoc(notificationRef, {
           message: notificationMessage,
           post: {},
@@ -86,7 +87,7 @@ export const useNoficationStore = defineStore('nofications', () => {
       }
 
       // Cập nhật số lượng thông báo của người nhận
-
+      // số thông báo của người nhận sẽ là số thông báo chưa đọc
       const notificationUnRead = await getDocs(
         query(
           collection(db, `notifications/${recipientId}/userNotifications`),
@@ -106,8 +107,7 @@ export const useNoficationStore = defineStore('nofications', () => {
     let message = ''
     switch (type) {
       case 'LIKE': {
-        const likers = await getLikers(post?.postId as string)
-
+        const likers = await getLikers(post?.postId as string) //lấy danh sách người đã thich bài viết
         if (likers.length === 1) {
           message = `${await getAuthorName(likers[0])} đã thích bài viết của bạn`
         } else if (likers.length === 2) {
@@ -123,8 +123,7 @@ export const useNoficationStore = defineStore('nofications', () => {
       }
 
       case 'COMMENT': {
-        const comments = await getCommentor(post?.postId as string)
-
+        const comments = await getCommentor(post?.postId as string) //lấy ds người đã comment
         if (comments.length === 1) {
           message = `${await getAuthorName(comments[0])} đã bình luận về bài viết của bạn`
         } else if (comments.length === 2) {
@@ -162,21 +161,22 @@ export const useNoficationStore = defineStore('nofications', () => {
     const comments: string[] = []
     const commentData = querySnapshot.docs[0].data().comment
     const uidSet = new Set()
-    const uniqueUids = []
+    const uniqueUids: string[] = []
 
     commentData.forEach((comment: Post) => {
       if (!uidSet.has(comment.userUid)) {
         uidSet.add(comment.userUid)
         uniqueUids.push(comment.userUid)
       }
-    })
+    }) // lọc ra số người đã comment vì 1 người có thế comment nhiều lần
 
     for (let i = 0; i < uniqueUids.length; i++) {
-      comments.push(querySnapshot.docs[0].data().comment[i].userUid)
+      comments.push(uniqueUids[i])
     }
     return comments
   }
 
+  //lấy tên người dùng theo uid
   const getAuthorName = async (userUid: string) => {
     const userDoc = await getDoc(doc(db, 'users', userUid))
     const userName = userDoc.data()?.displayName || ''
@@ -199,6 +199,7 @@ export const useNoficationStore = defineStore('nofications', () => {
     })
   }
 
+  //realtime listening khi có thông báo mới sẽ hiện lên toast
   const listeningNofication = (userId: string) => {
     const noficationRef = query(collection(db, `notifications/${userId}/userNotifications`))
     onSnapshot(noficationRef, (snapshot) => {

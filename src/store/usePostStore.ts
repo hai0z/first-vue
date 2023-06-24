@@ -43,7 +43,7 @@ export const usePostStore = defineStore('posts', () => {
     const docSnap = await getDoc(docRef)
     if (docSnap.exists()) {
       const comment = docSnap.data().comment
-      await updateDoc(docRef, { comment: [...comment, commentObj] })
+      await updateDoc(docRef, { comment: [commentObj, ...comment] })
       noficationStore.createNofication(docSnap.data().userUid, 'COMMENT', docSnap.data())
     } else {
       console.log('Post not found.')
