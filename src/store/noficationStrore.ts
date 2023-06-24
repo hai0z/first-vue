@@ -164,7 +164,7 @@ export const useNoficationStore = defineStore('nofications', () => {
     const uniqueUids: string[] = []
 
     commentData.forEach((comment: Post) => {
-      if (!uidSet.has(comment.userUid)) {
+      if (!uidSet.has(comment.userUid) && comment.userUid !== auth.currentUser?.uid) {
         uidSet.add(comment.userUid)
         uniqueUids.push(comment.userUid)
       }

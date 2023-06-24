@@ -68,12 +68,4 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
-  const authStore = useAuthStore()
-  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-    next('/login') // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
-  } else {
-    next() // Cho phép điều hướng đến route tiếp theo
-  }
-})
 export default router

@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/no-mutating-props -->
 <template>
   <div class="flex flex-col mb-6">
     <div class="post-header flex flex-row justify-between mb-2 items-center">
@@ -56,10 +55,7 @@
       <button class="text-zinc-400" @click="handleClick(post.postId)">
         View {{ post.comment.length }} comment
       </button>
-      <div
-        v-for="(comment, index) in post.comment.sort((a, b) => +b.time - +a.time).slice(0, 2)"
-        :key="index"
-      >
+      <div v-for="(comment, index) in post.comment.slice(0, 2)" :key="index">
         <div>
           <span class="font-semibold">{{ comment.userDisplayName }}</span> {{ comment.content }}
         </div>

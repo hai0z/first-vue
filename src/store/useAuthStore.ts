@@ -122,12 +122,15 @@ export const useAuthStore = defineStore('auth', () => {
         getUserPosts(user.uid)
         getSuggestUser()
         fetchFollowingPost()
+        loading.value = false
         router.push('/')
       } else {
         isAuthenticated.value = false
         userInfo.value = {} as UserInfo
         userPosts.value = []
         suggestUser.value = []
+        loading.value = false
+
         router.push('/login')
       }
     })

@@ -22,7 +22,7 @@
   </div>
   <rightSidebar />
 </template>
-<script lang="ts">
+<script lang="ts" setup>
 import storyAvatar from '../components/story-avatar.vue'
 import leftSidebar from '../components/left-sidebar.vue'
 import rightSidebar from '../components/right-sidebar.vue'
@@ -30,40 +30,29 @@ import userPost from '../components/user-post.vue'
 import { onMounted, ref, computed } from 'vue'
 import { useAuthStore } from '@/store/useAuthStore'
 
-export default {
-  name: 'App',
-  components: { storyAvatar, leftSidebar, rightSidebar, userPost },
-  setup() {
-    const fakeStory = ref([1, 2, 3, 4, 5, 6, 7, 8])
-    const authStore = useAuthStore()
+const fakeStory = ref([1, 2, 3, 4, 5, 6, 7, 8])
+const authStore = useAuthStore()
 
-    const displayedPostsCount = ref(3)
+const displayedPostsCount = ref(3)
 
-    const loadMorePosts = () => {
-      displayedPostsCount.value += 3
-    }
+const loadMorePosts = () => {
+  displayedPostsCount.value += 3
+}
 
-    const displayedPosts = computed(() => {
-      return authStore.followingPost.slice(0, displayedPostsCount.value)
-    })
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY
-      const documentHeight = document.documentElement.scrollHeight
-      const windowHeight = window.innerHeight
+const displayedPosts = computed(() => {
+  return authStore.followingPost.slice(0, displayedPostsCount.value)
+})
+const handleScroll = () => {
+  const scrollPosition = window.scrollY
+  const documentHeight = document.documentElement.scrollHeight
+  const windowHeight = window.innerHeight
 
-      if (scrollPosition + windowHeight >= documentHeight) {
-        loadMorePosts()
-      }
-    }
-
-    onMounted(() => {
-      window.addEventListener('scroll', handleScroll)
-    })
-    return {
-      fakeStory,
-      authStore,
-      displayedPosts
-    }
+  if (scrollPosition + windowHeight >= documentHeight) {
+    loadMorePosts()
   }
 }
+
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll)
+})
 </script>
