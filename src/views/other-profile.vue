@@ -108,6 +108,7 @@ const handleFollow = async () => {
     deleteDoc(doc(db, `follow/${route.params.userUid}/userFollower/${auth.currentUser?.uid}`))
   }
 }
+
 const getUserPosts = (uid: string) => {
   const q = query(collection(db, `posts`), orderBy('time', 'desc'), where('userUid', '==', uid))
   onSnapshot(q, (querySnapshot) => {

@@ -83,7 +83,6 @@ export const useNoficationStore = defineStore('nofications', () => {
           type,
           isRead: false
         })
-        console.log('abc')
       }
 
       // Cập nhật số lượng thông báo của người nhận
@@ -243,9 +242,14 @@ export const useNoficationStore = defineStore('nofications', () => {
           }
         }
       })
-
       isFirstConnection = false
     })
   }
-  return { createNofication, getNofications, listNofications, listeningNofication }
+  return {
+    createNofication,
+    getNofications,
+    listNofications,
+    listeningNofication,
+    isFirstConnection
+  }
 })

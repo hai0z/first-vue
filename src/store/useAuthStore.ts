@@ -1,3 +1,4 @@
+import { useNoficationStore } from './noficationStrore'
 import { query, updateDoc, writeBatch } from 'firebase/firestore'
 // auth.js
 import { onAuthStateChanged } from 'firebase/auth'
@@ -22,7 +23,7 @@ export const useAuthStore = defineStore('auth', () => {
   const userPosts = ref<Post[]>([])
   const loading = ref(true)
   const router = useRouter()
-
+  const noficationStore = useNoficationStore()
   const suggestUser = ref<UserInfo[]>([])
   const followingPost = ref<Post[]>([])
 
@@ -130,7 +131,7 @@ export const useAuthStore = defineStore('auth', () => {
         userPosts.value = []
         suggestUser.value = []
         loading.value = false
-
+        noficationStore.isFirstConnection = true
         router.push('/login')
       }
     })

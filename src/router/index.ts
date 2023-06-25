@@ -1,7 +1,6 @@
 import homePageVue from '@/views/home-page.vue'
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 
-import { useAuthStore } from '@/store/useAuthStore'
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
