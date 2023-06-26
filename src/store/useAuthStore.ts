@@ -1,6 +1,5 @@
 import { useNoficationStore } from './noficationStrore'
 import { query, updateDoc, writeBatch } from 'firebase/firestore'
-// auth.js
 import { onAuthStateChanged } from 'firebase/auth'
 import { defineStore } from 'pinia'
 import { auth, db } from '../firebase/config'

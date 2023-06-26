@@ -8,7 +8,7 @@
           <div class="flex gap-8 items-center">
             <span class="font-semibold text-lg">{{ userInfo.displayName }}</span>
             <button class="btn btn-primary btn-sm capitalize" @click="handleFollow">
-              {{ follower.includes(auth.currentUser?.uid as string) ? 'following' : 'follow' }}
+              {{ isFollowed ? 'following' : 'follow' }}
             </button>
           </div>
           <div class="flex gap-6 my-4">
@@ -64,7 +64,7 @@ import {
   deleteDoc
 } from 'firebase/firestore'
 import { useRoute, useRouter } from 'vue-router'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import type { Post } from '@/types'
 import { useNoficationStore } from '@/store/noficationStrore'
 
@@ -76,6 +76,10 @@ const userInfo = ref<UserInfo>({} as UserInfo)
 const userPosts = ref<Post[]>([])
 const follower = ref<string[]>([])
 const following = ref<string[]>([])
+
+const isFollowed = computed(() => {
+  return follower.value.includes(auth.currentUser?.uid as string)
+})
 
 const openModal = (postId: string) => {
   modalStore.setOpenViewPostModal(true)

@@ -27,7 +27,7 @@ interface INofication {
 
 export const useNoficationStore = defineStore('nofications', () => {
   const listNofications = ref([] as INofication[])
-  let isFirstConnection = true
+  let isFirstConnection = true //lần đầu sẽ không hiện thông báo cũ
   const createNofication = async (
     recipientId: string,
     type: 'LIKE' | 'COMMENT' | 'FOLLOW',
@@ -181,6 +181,7 @@ export const useNoficationStore = defineStore('nofications', () => {
     const userName = userDoc.data()?.displayName || ''
     return userName
   }
+  //lấy thông báo
   const getNofications = () => {
     const noficationRef = query(
       collection(db, `notifications/${auth.currentUser?.uid}/userNotifications`),

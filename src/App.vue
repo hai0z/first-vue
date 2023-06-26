@@ -1,5 +1,8 @@
 <template>
-  <div class="bg-base-100 flex flex-row">
+  <div v-if="authStore.loading">
+    <loading-page />
+  </div>
+  <div v-else class="bg-base-100 flex flex-row">
     <create-modal />
     <view-post-modal />
     <like-modal />
@@ -13,6 +16,7 @@ import ViewPostModal from './components/modal/view-post-modal.vue'
 import likeModal from './components/modal/like-modal.vue'
 import { useNoficationStore } from './store/noficationStrore'
 import { useAuthStore } from './store/useAuthStore'
+import loadingPage from './views/loading-page.vue'
 const noficationStrore = useNoficationStore()
 const authStore = useAuthStore()
 

@@ -1,7 +1,7 @@
 <template>
   <div
     :class="[
-      'border-r-[0.5px] border-base-300 bg-base-100 h-screen fixed px-4 py-8 transition-all duration-500 md:flex flex-col items-center hidden',
+      'border-r-[0.5px] border-base-300 bg-base-100 h-screen fixed px-4 py-8 transition-all duration-500 md:flex flex-col items-center hidden z-10',
       !noficationShow ? 'lg:w-[18%] w-24' : 'w-24'
     ]"
   >
@@ -65,10 +65,10 @@
   <Presence>
     <Motion
       :class="[
-        'h-screen overflow-y-auto fixed left-24 transition-all duration-150 opacity-0 z-1 bg-base-100',
+        'h-screen overflow-y-auto fixed left-24 transition-all duration-500 opacity-0 bg-base-100 w-96 -translate-x-96',
         noficationShow
-          ? 'w-96 opacity-100 border-r border-base-300'
-          : 'w-0 opacity-0 duration-0 border-0 border-none'
+          ? 'opacity-100 border-r border-base-300 translate-x-0 duration-500'
+          : ' duration-0 border-0 border-none -translate-x-96'
       ]"
     >
       <span class="p-4 font-bold text-2xl hidden lg:block">Nofication</span>
@@ -105,7 +105,7 @@
 import { auth } from '@/firebase/config'
 import { useAuthStore } from '@/store/useAuthStore'
 import { useModalStore } from '@/store/useModalStore'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { Motion, Presence } from 'motion/vue'
 import { useNoficationStore } from '@/store/noficationStrore'
 import { formatDistance } from 'date-fns'
@@ -138,4 +138,8 @@ const hanldeNoficationOpen = () => {
 onMounted(() => {
   noficationStore.getNofications()
 })
+watch(
+  () => noficationStore.listNofications,
+  () => noficationStore.getNofications()
+)
 </script>
